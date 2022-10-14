@@ -6,8 +6,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class LiveMobileAppApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(LiveMobileAppApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(LiveMobileAppApplication.class, args);
+    }
 
 }

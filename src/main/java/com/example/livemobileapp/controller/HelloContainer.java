@@ -1,2 +1,15 @@
-package com.example.livemobileapp.controller;public class HelloContainer {
+package com.example.livemobileapp.controller;
+
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+@RestController
+@RequestMapping("/api")
+public class HelloContainer {
+    @GetMapping
+    public String hello()
+    {
+        return "hello";
+    }
 }
