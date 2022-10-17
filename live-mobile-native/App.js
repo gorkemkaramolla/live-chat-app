@@ -1,12 +1,13 @@
-import { StatusBar } from "expo-status-bar";
-import { StyleSheet, Text, View } from "react-native";
-import MainScreen from "./components/screens/MainScreen";
+import * as React from "react";
+import { StyleSheet } from "react-native";
+import { SafeAreaView } from "react-native";
+import { NavigationContainer } from "@react-navigation/native";
+import AuthNavigator from "./components/Navigators/AuthNavigator";
 export default function App() {
     return (
-        <View style={styles.container}>
-            <MainScreen></MainScreen>
-            <StatusBar style="auto" />
-        </View>
+        <NavigationContainer>
+            <AuthNavigator></AuthNavigator>
+        </NavigationContainer>
     );
 }
 
