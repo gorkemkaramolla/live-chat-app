@@ -1,6 +1,7 @@
 import React from "react";
 import Icon from "react-native-vector-icons/Ionicons";
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
+import { StyleSheet } from "react-native";
 import Profile from "../screens/Home/Profile";
 import Settings from "../screens/Home/Settings";
 import Post from "../screens/Home/Post";
@@ -8,17 +9,22 @@ import { ROUTES } from "../constants";
 
 import Message from "../screens/Home/Message";
 import HomeFeed from "../screens/Home/HomeFeed";
-const BottomTabs = createBottomTabNavigator();
+import { TabBarIndicator } from "react-native-tab-view";
+const BottomTabs = createMaterialTopTabNavigator();
 
 const BottomNavigator = () => {
   return (
     <BottomTabs.Navigator
+      style={styles.bottomTabs}
+      tabBarPosition={"bottom"}
       screenOptions={{
+        swipeEnabled: true,
         tabBarStyle: {
-          backgroundColor: "#9B59B6",
-          tabBarButtonColor: "blue",
+          tabBarButtonColor: "red",
         },
-        tabBarActiveTintColor: "white",
+        tabBarActiveTintColor: "#007aff",
+        tabBarIndicatorStyle: {},
+        tabBarPressColor: "green",
         tabBarShowLabel: false,
         tabBarInactiveTintColor: "pink",
       }}
@@ -32,7 +38,7 @@ const BottomNavigator = () => {
               style={{
                 fontSize: 24,
               }}
-              name="home"
+              name={props.focused ? "home" : "home-outline"}
               {...props}
             ></Icon>
           ),
@@ -50,7 +56,7 @@ const BottomNavigator = () => {
               style={{
                 fontSize: 24,
               }}
-              name="chatbubble"
+              name={props.focused ? "chatbubble" : "chatbubble-outline"}
               {...props}
             ></Icon>
           ),
@@ -67,8 +73,8 @@ const BottomNavigator = () => {
               style={{
                 fontSize: 24,
               }}
-              name="add-circle"
               {...props}
+              name={props.focused ? "add-circle" : "add-circle-outline"}
             ></Icon>
           ),
         }}
@@ -84,7 +90,7 @@ const BottomNavigator = () => {
               style={{
                 fontSize: 24,
               }}
-              name="pulse"
+              name={props.focused ? "radio" : "radio-outline"}
               {...props}
             ></Icon>
           ),
@@ -101,7 +107,7 @@ const BottomNavigator = () => {
               style={{
                 fontSize: 24,
               }}
-              name="person"
+              name={props.focused ? "person" : "person-outline"}
               {...props}
             ></Icon>
           ),
@@ -113,4 +119,9 @@ const BottomNavigator = () => {
   );
 };
 
+const styles = StyleSheet.create({
+  bottomTabs: {
+    marginBottom: 20,
+  },
+});
 export default BottomNavigator;
