@@ -8,4 +8,5 @@ export default {
   SETTINGS: "Setting",
   DRAWER: "Drawer",
   BOTTOM: "Bottom",
+  USERINFO: "UserInfo",
 };
