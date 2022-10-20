@@ -1,6 +1,6 @@
-import React from "react";
-import Zucker from "../../../assets/Zuckerberg.jpg";
-import Icon from "react-native-vector-icons/AntDesign";
+import React from 'react';
+import Zucker from '../../../assets/Zuckerberg.jpg';
+import Icon from 'react-native-vector-icons/AntDesign';
 
 import {
   SafeAreaView,
@@ -9,8 +9,8 @@ import {
   Image,
   ImageBackground,
   StyleSheet,
-} from "react-native";
-import Pressable from "react-native/Libraries/Components/Pressable/Pressable";
+} from 'react-native';
+import Pressable from 'react-native/Libraries/Components/Pressable/Pressable';
 const HomeFeed = () => {
   return (
     <View style={styles.container}>
@@ -19,7 +19,7 @@ const HomeFeed = () => {
           <Text style={styles.imageTextHeader}>Mark ZuckerBerg</Text>
           <Text style={styles.imageText}>*Son Zamanlarda Aktif</Text>
           <Text style={styles.imageText}>İstanbul şehrinde yaşıyor</Text>
-          <Text style={styles.imageText}>35 km uzakta</Text>
+          <Text style={styles.imageText}>55 km</Text>
 
           <Pressable></Pressable>
         </ImageBackground>
@@ -31,13 +31,13 @@ const HomeFeed = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   card: {
-    width: "95%",
-    height: "70%",
-    shadowColor: "#000",
+    width: '95%',
+    height: '70%',
+    shadowColor: '#000',
     shadowOffset: {
       width: 0,
       height: 5,
@@ -48,35 +48,35 @@ const styles = StyleSheet.create({
     borderRadius: 20,
   },
   image: {
-    width: "100%",
-    height: "100%",
-    alignSelf: "center",
+    width: '100%',
+    height: '100%',
+    alignSelf: 'center',
     borderRadius: 20,
-    overflow: "hidden",
+    overflow: 'hidden',
     flex: 1,
-    justifyContent: "flex-end",
+    justifyContent: 'flex-end',
   },
   imageText: {
     paddingHorizontal: 15,
     paddingVertical: 8,
 
-    color: "white",
+    color: 'white',
     zIndex: 1,
     textShadowOffset: { width: 1, height: 1 },
     textShadowRadius: 1,
-    textShadowColor: "#403e3d",
-    fontFamily: "Damascus",
+    textShadowColor: '#403e3d',
+    fontFamily: 'Damascus',
     fontSize: 14,
   },
   imageTextHeader: {
     padding: 15,
-    fontWeight: "bold",
+    fontWeight: 'bold',
     fontSize: 24,
-    color: "white",
+    color: 'white',
     zIndex: 1,
     textShadowOffset: { width: 1, height: 1 },
     textShadowRadius: 1,
-    textShadowColor: "#403e3d",
+    textShadowColor: '#403e3d',
   },
 });
 export default HomeFeed;
