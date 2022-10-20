@@ -1,6 +1,6 @@
 import React from "react";
 import Zucker from "../../../assets/Zuckerberg.jpg";
-import Icon from "react-native-vector-icons";
+import Icon from "react-native-vector-icons/AntDesign";
 
 import {
   SafeAreaView,
@@ -20,6 +20,7 @@ const HomeFeed = () => {
           <Text style={styles.imageText}>*Son Zamanlarda Aktif</Text>
           <Text style={styles.imageText}>İstanbul şehrinde yaşıyor</Text>
           <Text style={styles.imageText}>35 km uzakta</Text>
+
           <Pressable></Pressable>
         </ImageBackground>
       </View>
