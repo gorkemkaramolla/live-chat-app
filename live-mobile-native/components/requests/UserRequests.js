@@ -2,7 +2,7 @@ import axios from "axios";
 
 const registerRequest = async (username, password, callback) => {
     await axios
-        .post("https://live-app-rest-api.herokuapp.com/api", {
+        .post("https://live-app-rest-api.herokuapp.com/users/signup", {
             username: username,
             password: password,
             gender: "asda123asd12sdasd",
@@ -16,14 +16,26 @@ const registerRequest = async (username, password, callback) => {
             return err.data;
         });
 };
-const getUsersReq = () => {
+const getUsersReq = (page, callback) => {
     axios
-        .get("https://live-app-rest-api.herokuapp.com/api")
+        .get(`https://live-app-rest-api.herokuapp.com/users/${page}`)
         .then((response) => {
-            console.log(response.data);
+            callback(response.data);
+            window.alert(JSON.stringify(response.data[0]));
         })
         .catch((err) => {
             console.error(err);
         });
 };
-export { registerRequest };
+const getUserProfilePic = (username, callback) => {
+    axios
+        .get(`https://live-app-rest-api.herokuapp.com/users/image/${username}`)
+        .then((response) => {
+            callback(response.data);
+            window.alert(JSON.stringify(response.data[0]));
+        })
+        .catch((err) => {
+            console.error(err);
+        });
+};
+export { registerRequest, getUsersReq, getUserProfilePic };
