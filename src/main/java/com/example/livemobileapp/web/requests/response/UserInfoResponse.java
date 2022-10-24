@@ -10,6 +10,7 @@ public class UserInfoResponse {
     private String lastname;
     private String gender;
 
+
     public UserInfoResponse(String username, String email, String firstname, String lastname, String gender) {
         this.username = username;
         this.email = email;
