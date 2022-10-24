@@ -32,6 +32,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
@@ -53,12 +54,13 @@ public class UserService {
         return userCreateResponse;
     }
 
-    public List<User> getUsers(Integer page) {
+    public List<UserInfoResponse> getUsers(Integer page) {
 
         Pageable pageableRequest= PageRequest.of(page, 5, Sort.Direction.ASC,"createdAt");
         Query query = new Query();
         query.with(pageableRequest);
-        return mongoTemplate.find(query,User.class);
+        List<User> users =      mongoTemplate.find(query,User.class);
+        return users.stream().map(user-> new UserInfoResponse(user.getUsername(),user.getEmail(),user.getFirstname(),user.getLastname(),user.getGender())).collect(Collectors.toList());
     }
 
     public UserInfoResponse updateInfo(UserInformationsRequest userInformationsRequest) {
