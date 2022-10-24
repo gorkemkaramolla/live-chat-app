@@ -1,82 +1,74 @@
-import React from 'react';
-import Zucker from '../../../assets/Zuckerberg.jpg';
-import Icon from 'react-native-vector-icons/AntDesign';
+import React, { useEffect, useState } from "react";
+import { View, ScrollView } from "react-native";
+import Icon from "react-native-vector-icons/AntDesign";
+import UserCards from "./Users/UserCards";
+import { getUsersReq } from "../../requests/UserRequests";
+import { StyleSheet } from "react-native";
+import Pressable from "react-native/Libraries/Components/Pressable/Pressable";
 
-import {
-  SafeAreaView,
-  View,
-  Text,
-  Image,
-  ImageBackground,
-  StyleSheet,
-} from 'react-native';
-import Pressable from 'react-native/Libraries/Components/Pressable/Pressable';
 const HomeFeed = () => {
-  return (
-    <View style={styles.container}>
-      <View style={styles.card}>
-        <ImageBackground style={styles.image} source={Zucker}>
-          <Text style={styles.imageTextHeader}>Mark ZuckerBerg</Text>
-          <Text style={styles.imageText}>*Son Zamanlarda Aktif</Text>
-          <Text style={styles.imageText}>İstanbul şehrinde yaşıyor</Text>
-          <Text style={styles.imageText}>55 km</Text>
+    const [users, setUsers] = useState([]);
+    const story = () => {
+        window.alert("i am a story");
+    };
+    useEffect(() => {
+        console.warn("rendered");
+        getUsersReq(1, (response) => {
+            setUsers(response);
+        });
+    }, []);
 
-          <Pressable></Pressable>
-        </ImageBackground>
-      </View>
-    </View>
-  );
+    return (
+        <ScrollView pagingEnabled style={styles.container}>
+            <View style={styles.storyContainer}>
+                <Pressable onPress={story}>
+                    <View style={styles.story}></View>
+                </Pressable>
+                <Pressable onPress={story}>
+                    <View style={styles.story}></View>
+                </Pressable>
+                <Pressable onPress={story}>
+                    <View style={styles.story}></View>
+                </Pressable>
+                <Pressable onPress={story}>
+                    <View style={styles.story}></View>
+                </Pressable>
+                <Pressable onPress={story}>
+                    <View style={styles.story}></View>
+                </Pressable>
+            </View>
+            {users.map((user, index) => (
+                <View style={styles.view} key={index}>
+                    <UserCards user={user}></UserCards>
+                </View>
+            ))}
+        </ScrollView>
+    );
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  card: {
-    width: '95%',
-    height: '70%',
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 5,
+    container: {
+        paddingTop: 50,
     },
-    shadowOpacity: 0.36,
-    shadowRadius: 6.68,
-    elevation: 11,
-    borderRadius: 20,
-  },
-  image: {
-    width: '100%',
-    height: '100%',
-    alignSelf: 'center',
-    borderRadius: 20,
-    overflow: 'hidden',
-    flex: 1,
-    justifyContent: 'flex-end',
-  },
-  imageText: {
-    paddingHorizontal: 15,
-    paddingVertical: 8,
-
-    color: 'white',
-    zIndex: 1,
-    textShadowOffset: { width: 1, height: 1 },
-    textShadowRadius: 1,
-    textShadowColor: '#403e3d',
-    fontFamily: 'Damascus',
-    fontSize: 14,
-  },
-  imageTextHeader: {
-    padding: 15,
-    fontWeight: 'bold',
-    fontSize: 24,
-    color: 'white',
-    zIndex: 1,
-    textShadowOffset: { width: 1, height: 1 },
-    textShadowRadius: 1,
-    textShadowColor: '#403e3d',
-  },
+    view: {
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+        height: 400,
+    },
+    storyContainer: {
+        flex: 0.2,
+        justifyContent: "center",
+        alignItems: "baseline",
+        flexDirection: "row",
+    },
+    story: {
+        margin: 5,
+        borderWidth: 1,
+        borderRadius: 50,
+        width: 60,
+        height: 60,
+        backgroundColor: "white",
+    },
 });
 export default HomeFeed;
