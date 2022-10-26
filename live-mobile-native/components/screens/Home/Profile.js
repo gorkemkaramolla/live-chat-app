@@ -3,13 +3,28 @@ import React, { useEffect, useState } from "react";
 import { StyleSheet } from "react-native";
 import { getUserProfilePic } from "../../requests/UserRequests";
 import Pressable from "react-native/Libraries/Components/Pressable/Pressable";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
 export default function Profile() {
     const [profilePic, setProfilePic] = useState();
+    const [user, setUser] = useState("");
+
     useEffect(() => {
         getUserProfilePic("4user", (response) => {
             setProfilePic(response);
         });
+        getData();
     }, []);
+    const getData = async () => {
+        try {
+            const value = await AsyncStorage.getItem("@user");
+            if (value !== null) {
+                setUser(value);
+            }
+        } catch (e) {
+            // error reading value
+        }
+    };
     return (
         <View style={styles.container}>
             <Image
@@ -18,7 +33,7 @@ export default function Profile() {
                     uri: "https://live-app-rest-api.herokuapp.com/users/image/opsman4",
                 }}
             ></Image>
-            <Text>Name Surname</Text>
+            <Text>{user}</Text>
             <Pressable>
                 <Text>Add Profile</Text>
             </Pressable>
