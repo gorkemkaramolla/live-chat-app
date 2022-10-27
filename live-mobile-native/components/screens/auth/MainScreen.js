@@ -4,6 +4,7 @@ import { View, Text, StyleSheet, TextInput, Pressable } from "react-native";
 import Icon from "react-native-vector-icons/FontAwesome";
 import { registerRequest } from "../../requests/UserRequests";
 import { ROUTES } from "../../constants";
+
 const MainScreen = ({ navigation }) => {
     const [username, setUsername] = useState("");
     const [password, setPassword] = useState("");
