@@ -6,9 +6,8 @@ import Profile from '../Screens/Home/Profile';
 import Settings from '../Screens/Home/Settings';
 import Post from '../Screens/Home/Post';
 import {ROUTES} from '../constants';
-
 import Message from '../Screens/Home/Message';
-import Home from '../Screens/Home/Home';
+import Home from '../Screens/Home/Feed/Home';
 const BottomTabs = createMaterialTopTabNavigator();
 
 const BottomNavigator = () => {
@@ -86,8 +85,9 @@ const BottomNavigator = () => {
               {...props}></Icon>
           ),
         }}
-        name="settings"
+        name={ROUTES.SETTINGS}
         component={Settings}></BottomTabs.Screen>
+
       <BottomTabs.Screen
         options={{
           headerShown: false,

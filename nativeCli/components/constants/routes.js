@@ -10,4 +10,5 @@ export default {
   DRAWER: 'Drawer',
   BOTTOM: 'Bottom',
   USERINFO: 'UserInfo',
+  SEARCH: 'Search',
 };

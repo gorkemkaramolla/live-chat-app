@@ -21,7 +21,6 @@ const getUsersReq = (page, callback) => {
     .get(`https://live-app-rest-api.herokuapp.com/users/${page}`)
     .then(response => {
       callback(response.data);
-      window.alert(JSON.stringify(response.data[0]));
     })
     .catch(err => {
       console.error(err);
@@ -32,7 +31,6 @@ const getUserProfilePic = (username, callback) => {
     .get(`https://live-app-rest-api.herokuapp.com/users/image/${username}`)
     .then(response => {
       callback(response.data);
-      window.alert(JSON.stringify(response.data[0]));
     })
     .catch(err => {
       console.error(err);
