@@ -25,6 +25,7 @@
     "react-native-screens": "^3.18.2",
     "react-native-tab-view": "^3.3.0",
     "react-native-vector-icons": "^9.2.0",
+    "save": "^2.9.0",
     "yarn": "^1.22.19"
   },
   "devDependencies": {
