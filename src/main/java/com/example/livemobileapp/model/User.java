@@ -1,5 +1,6 @@
 package com.example.livemobileapp.model;
 
+import com.example.livemobileapp.files.TestProfilePic;
 import lombok.Data;
 import org.bson.types.Binary;
 import org.springframework.data.annotation.Id;
@@ -27,6 +28,6 @@ public class User {
     private String lastname;
     private String gender;
     private LocalDateTime createdAt = LocalDateTime.now();
-    private ProfilePicture profilePicture;
+    private ProfilePicture profilePicture = TestProfilePic.getDefaultProfilePic();
 
 }

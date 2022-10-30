@@ -15,15 +15,10 @@ const HomeFeed = () => {
   };
 
   useEffect(() => {
-    getUsersReq(1, response => {
+    getUsersReq(0, response => {
       setUsers(response);
     });
   }, []);
-  useEffect(() => {
-    getUsersReq(paging, response => {
-      setUsers(prev => [...prev, response]);
-    });
-  }, [paging]);
 
   const isCloseToBottom = ({layoutMeasurement, contentOffset, contentSize}) => {
     const paddingToBottom = 20;
@@ -39,7 +34,6 @@ const HomeFeed = () => {
         if (isCloseToBottom(nativeEvent)) {
           setTimeout(() => {
             setPaging(prev => prev + 1);
-            window.alert(paging);
           }, 3000);
         }
       }}
@@ -67,6 +61,7 @@ const HomeFeed = () => {
           <UserCards user={user}></UserCards>
         </View>
       ))}
+      <Text>Loading...</Text>
     </ScrollView>
   );
 };

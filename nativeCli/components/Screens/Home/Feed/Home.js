@@ -17,6 +17,7 @@ export default function Home({navigation}) {
 const styles = StyleSheet.create({
   home: {
     flex: 1,
+    marginTop: 50,
     alignItems: 'center',
   },
   linkSearch: {
