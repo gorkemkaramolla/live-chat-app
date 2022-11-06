@@ -1,6 +1,4 @@
 package com.example.livemobileapp.model;
-
-import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.bson.types.Binary;
 
