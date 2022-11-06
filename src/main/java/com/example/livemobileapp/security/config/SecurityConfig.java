@@ -2,6 +2,7 @@ package com.example.livemobileapp.security.config;
 
 import com.example.livemobileapp.security.filter.AuthenticationFilter;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 
 
@@ -14,6 +15,8 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+
+import static org.springframework.http.HttpMethod.*;
 
 @Configuration
 @EnableWebSecurity
@@ -29,7 +32,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.csrf().disable();
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-        http.authorizeHttpRequests().anyRequest().permitAll();
+        http.authorizeRequests().antMatchers(GET,"/posts/**");
+        http.authorizeRequests().antMatchers(POST,"/posts");
+        http.authorizeRequests().antMatchers(POST,"/users/**");
+        http.authorizeRequests().antMatchers(POST,"/users/signup").permitAll();
+        http.authorizeRequests().anyRequest().authenticated();
         http.addFilter(new AuthenticationFilter(authenticationManagerBean()));
     }
     @Bean
