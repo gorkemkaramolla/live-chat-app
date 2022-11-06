@@ -2,6 +2,7 @@ package com.example.livemobileapp.security.filter;
 
 
 import com.example.livemobileapp.security.UserDetailsImpl;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.extern.slf4j.Slf4j;
@@ -9,21 +10,18 @@ import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
-import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Date;
-import java.util.stream.Collectors;
-
+import java.util.HashMap;
+import java.util.Map;
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 @Slf4j
-
-public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
+public class  AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
     private final AuthenticationManager authenticationManager;
     public AuthenticationFilter(AuthenticationManager authenticationManager)
     {
@@ -48,8 +46,8 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis()+ 10 * 60 *1000))
                 .setIssuer(request.getRequestURL().toString())
-                .claim("roles",user.getAuthorities().stream().map(GrantedAuthority::getAuthority).collect(Collectors.toList()))
-                .signWith(SignatureAlgorithm.HS256,"gorkemkaramolla")
+                .claim("roles",user.getAuthorities())
+                .signWith(SignatureAlgorithm.HS512,"secret")
                 .compact();
 
         String refresh_token = Jwts.builder()
@@ -57,9 +55,13 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
                 .setIssuedAt(new Date(System.currentTimeMillis()))
                 .setExpiration(new Date(System.currentTimeMillis()+ 30 * 60 *1000))
                 .setIssuer(request.getRequestURL().toString())
-                .signWith(SignatureAlgorithm.HS256,"gorkemkaramolla")
+                .claim("roles",user.getAuthorities())
+                .signWith(SignatureAlgorithm.HS512,"secret")
                 .compact();
-        response.setHeader("access_token",access_token);
-        response.setHeader("refresh_token",refresh_token);
+        Map<String,String> tokens = new HashMap<>();
+        tokens.put("access_token",access_token);
+        tokens.put("refresh_token",refresh_token);
+        response.setContentType(APPLICATION_JSON_VALUE);
+        new ObjectMapper().writeValue(response.getOutputStream(),tokens);
     }
 }
