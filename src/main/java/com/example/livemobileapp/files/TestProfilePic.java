@@ -1,11 +1,6 @@
 package com.example.livemobileapp.files;
-
 import com.example.livemobileapp.model.ProfilePicture;
-import org.apache.tomcat.util.http.fileupload.IOUtils;
 import org.bson.types.Binary;
-import org.springframework.mock.web.MockMultipartFile;
-import org.springframework.web.multipart.MultipartFile;
-
 import java.io.*;
 import java.nio.file.Files;
 
