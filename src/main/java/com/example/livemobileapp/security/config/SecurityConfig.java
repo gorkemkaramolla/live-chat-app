@@ -1,6 +1,7 @@
 package com.example.livemobileapp.security.config;
 
 import com.example.livemobileapp.security.filter.AuthenticationFilter;
+import com.example.livemobileapp.security.filter.AuthorizationFilter;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -15,6 +16,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import static org.springframework.http.HttpMethod.*;
 
@@ -30,14 +32,18 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
+        AuthenticationFilter customAuthFilter = new AuthenticationFilter(authenticationManagerBean());
+        AuthorizationFilter authorizationFilter = new AuthorizationFilter();
+        customAuthFilter.setFilterProcessesUrl("/users/login");
+        http.cors().disable();
         http.csrf().disable();
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-        http.authorizeRequests().antMatchers(GET,"/posts/**");
-        http.authorizeRequests().antMatchers(POST,"/posts");
-        http.authorizeRequests().antMatchers(POST,"/users/**");
         http.authorizeRequests().antMatchers(POST,"/users/signup").permitAll();
+        http.authorizeRequests().antMatchers(POST,"/users/login").permitAll();
         http.authorizeRequests().anyRequest().authenticated();
-        http.addFilter(new AuthenticationFilter(authenticationManagerBean()));
+        http.addFilter(customAuthFilter);
+        http.addFilterBefore(new AuthorizationFilter(), UsernamePasswordAuthenticationFilter.class);
+
     }
     @Bean
     @Override
@@ -49,5 +55,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
     {
         return new BCryptPasswordEncoder();
     }
+
 
 }
