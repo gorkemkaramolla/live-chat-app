@@ -1,10 +1,9 @@
 package com.example.livemobileapp.security.filter;
 
 
+import com.example.livemobileapp.security.JwtGenerator;
 import com.example.livemobileapp.security.UserDetailsImpl;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -41,23 +40,12 @@ public class  AuthenticationFilter extends UsernamePasswordAuthenticationFilter 
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
         UserDetailsImpl user = (UserDetailsImpl) authResult.getPrincipal();
-        String access_token = Jwts.builder()
-                .setSubject(user.getUsername())
-                .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis()+ 10 * 60 *1000))
-                .setIssuer(request.getRequestURL().toString())
-                .claim("roles",user.getAuthorities())
-                .signWith(SignatureAlgorithm.HS512,"secret")
-                .compact();
+        String access_token = JwtGenerator.generateToken(user,request.getRequestURL().toString()
+                ,new Date(System.currentTimeMillis()),new Date(System.currentTimeMillis()+10*60*1000));
 
-        String refresh_token = Jwts.builder()
-                .setSubject(user.getUsername())
-                .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis()+ 30 * 60 *1000))
-                .setIssuer(request.getRequestURL().toString())
-                .claim("roles",user.getAuthorities())
-                .signWith(SignatureAlgorithm.HS512,"secret")
-                .compact();
+        String refresh_token  = JwtGenerator.generateToken(user,request.getRequestURL().toString()
+                ,new Date(System.currentTimeMillis()),new Date(System.currentTimeMillis()+20*60*1000));
+
         Map<String,String> tokens = new HashMap<>();
         tokens.put("access_token",access_token);
         tokens.put("refresh_token",refresh_token);
