@@ -1,12 +1,15 @@
 package com.example.livemobileapp.service;
-
+import com.example.livemobileapp.exceptions.BadCredentialsException;
 import com.example.livemobileapp.model.ProfilePicture;
 import com.example.livemobileapp.model.User;
 import com.example.livemobileapp.repository.UserRepository;
+import com.example.livemobileapp.security.JwtGenerator;
 import com.example.livemobileapp.web.requests.request.UserCreateRequest;
 import com.example.livemobileapp.web.requests.request.UserInformationsRequest;
 import com.example.livemobileapp.web.requests.response.UserInfoResponse;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.bson.BsonBinarySubType;
 import org.bson.types.Binary;
 import org.springframework.data.domain.PageRequest;
@@ -18,28 +21,42 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StreamUtils;
 import org.springframework.web.multipart.MultipartFile;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
+import static com.example.livemobileapp.security.JwtGenerator.parseGetBody;
+import static com.example.livemobileapp.security.JwtGenerator.validateToken;
+import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
 @Service
 @AllArgsConstructor
+@Slf4j
 public class UserService {
+    private final String EMAIL_PATTERN = "^(?=.{1,64}@)[A-Za-z0-9_-]+(\\.[A-Za-z0-9_-]+)*@"+ "[^-][A-Za-z0-9-]+(\\.[A-Za-z0-9-]+)*(\\.[A-Za-z]{2,})$";
+    private final String PASSWORD_PATTERN = "^(?=.*[A-Za-z])(?=.*\\d)(?=.*[@$!%*#?&])[A-Za-z\\d@$!%*#?&]{8,}$";
+
     private final BCryptPasswordEncoder passwordEncoder;
 
     private final MongoTemplate mongoTemplate;
 
     private final UserRepository userRepository;
-    public UserInfoResponse saveSampleUser(UserCreateRequest userCreateRequest) {
+    public UserInfoResponse registerUser(UserCreateRequest userCreateRequest) {
         User user = new User();
-        user.setPassword(passwordEncoder.encode(userCreateRequest.getPassword()));
-        user.setUsername(userCreateRequest.getUsername());
-        user.setEmail(userCreateRequest.getEmail());
+        if(userCreateRequest.getPassword().matches(PASSWORD_PATTERN) &&
+                userCreateRequest.getEmail().matches(EMAIL_PATTERN) &&
+                userCreateRequest.getUsername().length()>5)
+        {
+            user.setPassword(passwordEncoder.encode(userCreateRequest.getPassword()));
+            user.setUsername(userCreateRequest.getUsername());
+            user.setEmail(userCreateRequest.getEmail());
 
-        userRepository.save(user);
-        return new UserInfoResponse(user.getUsername(),user.getEmail(),user.getFirstname(),user.getLastname(),user.getGender());
+            userRepository.save(user);
+            return new UserInfoResponse(user.getUsername(),user.getEmail(),user.getFirstname(),user.getLastname(),user.getGender());
+
+        }
+        throw new BadCredentialsException("Credentials are not correct");
     }
 
     public List<UserInfoResponse> getUsers(Integer page) {
@@ -105,5 +122,27 @@ public class UserService {
         }
         response.setStatus(HttpServletResponse.SC_BAD_GATEWAY);
 
+    }
+
+    public void getAccessToken(HttpServletRequest request,HttpServletResponse response) throws IOException {
+        String authorizationHeader  = request.getHeader("Authorization");
+        if(authorizationHeader!=null && authorizationHeader.startsWith("Bearer "))
+        {
+            String token = authorizationHeader.substring("Bearer ".length());
+            if(validateToken(token))
+            {
+                String username = parseGetBody(token).getSubject();
+                User user = userRepository.findByUsername(username);
+                if(user != null)
+                {
+                    String access_token = JwtGenerator.generateToken(user,request.getRequestURL().toString()
+                            ,new Date(System.currentTimeMillis()),new Date(System.currentTimeMillis()+10*60*1000));
+                    Map<String,String> tokens = new HashMap<>();
+                    tokens.put("access_token",access_token);
+                    response.setContentType(APPLICATION_JSON_VALUE);
+                    new ObjectMapper().writeValue(response.getOutputStream(),tokens);
+                }
+            }
+        }
     }
 }
