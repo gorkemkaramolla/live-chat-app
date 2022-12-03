@@ -1,5 +1,6 @@
 package com.example.livemobileapp.service;
 import com.example.livemobileapp.exceptions.BadCredentialsException;
+import com.example.livemobileapp.exceptions.PageNotExistException;
 import com.example.livemobileapp.model.ProfilePicture;
 import com.example.livemobileapp.model.User;
 import com.example.livemobileapp.repository.UserRepository;
@@ -59,7 +60,7 @@ public class UserService {
         throw new BadCredentialsException("Credentials are not correct");
     }
 
-    public List<UserInfoResponse> getUsers(Integer page) {
+    public List<UserInfoResponse> getUsers(Integer page) throws PageNotExistException {
         if(page !=null)
         {
             Pageable pageableRequest= PageRequest.of(page, 5, Sort.Direction.ASC,"createdAt");
@@ -75,7 +76,7 @@ public class UserService {
                             ,user.getGender()))
                     .collect(Collectors.toList()));
         }
-    return null;
+    throw new PageNotExistException("Requested page does not exist");
     }
 
     public UserInfoResponse updateInfo(UserInformationsRequest userInformationsRequest) {

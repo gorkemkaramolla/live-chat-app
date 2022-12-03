@@ -1,13 +1,11 @@
 import axios from 'axios';
 
-const registerRequest = async (username, password, callback) => {
+const registerRequest = async (email, username, password, callback) => {
   await axios
     .post('https://live-app-rest-api.herokuapp.com/users/signup', {
       username: username,
       password: password,
-      gender: 'asda123asd12sdasd',
-      email: 'deneme72323322322332',
-      password: 'asdasasdd12312312asd',
+      email: email,
     })
     .then(response => {
       callback(response.data);

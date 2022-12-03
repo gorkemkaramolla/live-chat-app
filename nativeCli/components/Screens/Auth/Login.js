@@ -34,8 +34,9 @@ const SecondaryScreen = ({navigation}) => {
   };
   return (
     <View style={styles.container}>
+      <Text style={{marginBottom: '15%'}}>L O G I N</Text>
+
       <View>
-        <Text>Lütfen Giriş Yapın</Text>
         <TextInput
           onChangeText={handleUsername}
           value={username}
@@ -57,7 +58,7 @@ const SecondaryScreen = ({navigation}) => {
           <Text style={styles.text}>Gönder</Text>
         </Pressable>
         <Pressable onPress={() => navigation.navigate(ROUTES.REGISTER)}>
-          <Text>Hesabın yok mu kayıt ol</Text>
+          <Text style={{alignSelf: 'center'}}>Hesabın yok mu kayıt ol</Text>
         </Pressable>
       </View>
     </View>
@@ -69,13 +70,17 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
+    borderWidth: 1,
+    margin: 15,
+    marginVertical: '20%',
   },
   textInput: {
     padding: 10,
-    margin: 10,
+    margin: 20,
     borderColor: 'gray',
     borderWidth: 1,
-    width: 300,
+    minHeight: 50,
+    width: 320,
   },
   button: {
     alignItems: 'center',
@@ -84,12 +89,15 @@ const styles = StyleSheet.create({
     paddingHorizontal: 32,
     borderRadius: 4,
     elevation: 3,
+    minWidth: 320,
+    alignSelf: 'center',
     backgroundColor: 'black',
   },
   text: {
     fontSize: 16,
     lineHeight: 21,
     fontWeight: 'bold',
+    alignSelf: 'center',
     letterSpacing: 0.25,
     color: 'white',
   },

@@ -16,6 +16,7 @@
     "@react-navigation/native": "^6.0.13",
     "@react-navigation/native-stack": "^6.9.1",
     "axios": "^0.26.0",
+    "formik": "^2.2.9",
     "react": "18.1.0",
     "react-native": "0.70.4",
     "react-native-gesture-handler": "^2.8.0",
@@ -26,7 +27,8 @@
     "react-native-tab-view": "^3.3.0",
     "react-native-vector-icons": "^9.2.0",
     "save": "^2.9.0",
-    "yarn": "^1.22.19"
+    "yarn": "^1.22.19",
+    "yup": "^0.32.11"
   },
   "devDependencies": {
     "@babel/core": "^7.12.9",

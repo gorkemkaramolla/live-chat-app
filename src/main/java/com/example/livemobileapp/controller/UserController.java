@@ -1,6 +1,7 @@
 package com.example.livemobileapp.controller;
 
 import com.example.livemobileapp.exceptions.BadCredentialsException;
+import com.example.livemobileapp.exceptions.PageNotExistException;
 import com.example.livemobileapp.service.UserService;
 import com.example.livemobileapp.web.requests.request.UserCreateRequest;
 import com.example.livemobileapp.web.requests.request.UserInformationsRequest;
@@ -32,11 +33,10 @@ public class UserController {
     {
         UserInfoResponse userInfoResponse = userService.registerUser(userCreateRequest);
 
-       return new ResponseEntity<UserInfoResponse>(userInfoResponse,HttpStatus.CREATED);
+       return new ResponseEntity<>(userInfoResponse, HttpStatus.CREATED);
     }
     @GetMapping("/{page}")
-    public ResponseEntity<List<UserInfoResponse>> getUsers(@PathVariable Integer page)
-    {
+    public ResponseEntity<List<UserInfoResponse>> getUsers(@PathVariable Integer page) throws PageNotExistException {
         return new ResponseEntity<>(userService.getUsers(page),HttpStatus.OK);
     }
 
@@ -61,9 +61,10 @@ public class UserController {
        userService.getImage(response,username);
     }
 
-    @ExceptionHandler(BadCredentialsException.class)
-    public ResponseEntity handleException(BadCredentialsException e) {
+    @ExceptionHandler({BadCredentialsException.class,PageNotExistException.class})
+    public ResponseEntity handleException(PageNotExistException e ){
         // log exception
         return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
     }
+
 }
