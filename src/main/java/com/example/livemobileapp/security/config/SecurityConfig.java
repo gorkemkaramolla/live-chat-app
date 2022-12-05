@@ -3,7 +3,6 @@ package com.example.livemobileapp.security.config;
 import com.example.livemobileapp.security.filter.AuthenticationFilter;
 import com.example.livemobileapp.security.filter.AuthorizationFilter;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 
 
