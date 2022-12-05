@@ -12,9 +12,10 @@ const AuthNavigator = () => {
       initialRouteName={ROUTES.Login}
       screenOptions={{
         headerStyle: {
-          backgroundColor: '#9B59B6',
+          backgroundColor: '#1CED1321',
         },
-        headerTintColor: 'white',
+        headerShown: false,
+        headerTintColor: 'black',
         headerBackTitleVisible: false,
       }}>
       <Stack.Screen name={ROUTES.LOGIN} component={Login} options={{}} />

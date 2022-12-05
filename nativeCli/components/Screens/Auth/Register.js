@@ -50,8 +50,10 @@ const MainScreen = ({navigation}) => {
               values.password,
               response => {
                 setResponseData(response);
+                window.alert(response);
               },
             );
+            setLoading(false);
           }}>
           {({
             handleChange,

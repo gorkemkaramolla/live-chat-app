@@ -5,8 +5,9 @@ import UserCards from '../Users/UserCards';
 import {getUsersReq} from '../../../requests/UserRequest';
 import {StyleSheet} from 'react-native';
 import Pressable from 'react-native/Libraries/Components/Pressable/Pressable';
+import {ROUTES} from '../../../constants';
 
-const HomeFeed = () => {
+const HomeFeed = ({navigation}) => {
   const [paging, setPaging] = useState(0);
 
   const [users, setUsers] = useState([]);
@@ -38,6 +39,21 @@ const HomeFeed = () => {
         }
       }}
       scrollEventThrottle={600}>
+      <View
+        style={{
+          borderWidth: 2,
+          top: 155,
+          padding: 25,
+          borderColor: 'black',
+          position: 'absolute',
+        }}>
+        <Pressable
+          onPress={() => {
+            navigation.navigate(ROUTES.HOME);
+          }}>
+          <Text>back</Text>
+        </Pressable>
+      </View>
       <View style={styles.storyContainer}>
         <Pressable onPress={story}>
           <View style={styles.story}></View>
