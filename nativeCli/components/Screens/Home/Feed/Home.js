@@ -6,22 +6,31 @@ import {ROUTES} from '../../../constants';
 import {Link} from '@react-navigation/native';
 import {StyleSheet} from 'react-native';
 import PostFeed from '../Posts/PostFeed';
+import {ScrollView} from 'react-native-gesture-handler';
+const array = [1, 2, 3, 4, 5];
 export default function Home({navigation}) {
   return (
-    <View style={styles.home}>
-      <Link style={styles.linkSearch} to={{screen: ROUTES.SEARCH}}>
-        <Icon style={styles.linkSearchIcon} name="ios-search"></Icon>
-      </Link>
-      <View>
-        <PostFeed />
-      </View>
+    <View>
+      <ScrollView
+        contentContainerStyle={{
+          maxHeight: 100000,
+        }}>
+        <View style={styles.home}>
+          <Link style={styles.linkSearch} to={{screen: ROUTES.SEARCH}}>
+            <Icon style={styles.linkSearchIcon} name="ios-search"></Icon>
+          </Link>
+          <View>
+            {array.map(idz => (
+              <PostFeed key={idz}></PostFeed>
+            ))}
+          </View>
+        </View>
+      </ScrollView>
     </View>
   );
 }
 const styles = StyleSheet.create({
   home: {
-    flex: 1,
-    marginTop: 50,
     alignItems: 'center',
   },
   linkSearch: {
