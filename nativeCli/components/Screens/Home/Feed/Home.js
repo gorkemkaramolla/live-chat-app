@@ -5,12 +5,16 @@ import Pressable from 'react-native/Libraries/Components/Pressable/Pressable';
 import {ROUTES} from '../../../constants';
 import {Link} from '@react-navigation/native';
 import {StyleSheet} from 'react-native';
+import PostFeed from '../Posts/PostFeed';
 export default function Home({navigation}) {
   return (
     <View style={styles.home}>
       <Link style={styles.linkSearch} to={{screen: ROUTES.SEARCH}}>
         <Icon style={styles.linkSearchIcon} name="ios-search"></Icon>
       </Link>
+      <View>
+        <PostFeed />
+      </View>
     </View>
   );
 }
@@ -22,8 +26,10 @@ const styles = StyleSheet.create({
   },
   linkSearch: {
     alignSelf: 'flex-end',
+    position: 'relative',
   },
   linkSearchIcon: {
     fontSize: 24,
+    position: 'relative',
   },
 });
