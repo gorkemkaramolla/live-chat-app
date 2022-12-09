@@ -7,19 +7,19 @@ import {Link} from '@react-navigation/native';
 import {StyleSheet} from 'react-native';
 import PostFeed from '../Posts/PostFeed';
 import {ScrollView} from 'react-native-gesture-handler';
+
+import {Dimensions} from 'react-native';
+const windowHeight = Dimensions.get('window').height;
 const array = [1, 2, 3, 4, 5];
 export default function Home({navigation}) {
   return (
     <View>
-      <ScrollView
-        contentContainerStyle={{
-          maxHeight: 100000,
-        }}>
+      <ScrollView contentContainerStyle={{}}>
         <View style={styles.home}>
           <Link style={styles.linkSearch} to={{screen: ROUTES.SEARCH}}>
             <Icon style={styles.linkSearchIcon} name="ios-search"></Icon>
           </Link>
-          <View>
+          <View style={{paddingBottom: windowHeight / 2 - 50}}>
             {array.map(idz => (
               <PostFeed key={idz}></PostFeed>
             ))}
