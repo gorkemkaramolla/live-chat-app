@@ -1,4 +1,10 @@
+/* eslint-disable quotes */
+/* eslint-disable react-native/no-inline-styles */
 import React, {useState} from 'react';
+import {Link} from '@react-navigation/native';
+
+import Icon from 'react-native-vector-icons/MaterialIcons';
+import CommentToPost from './Comments/CommentToPost';
 import {
   View,
   TouchableOpacity,
@@ -7,7 +13,10 @@ import {
   StyleSheet,
   Pressable,
 } from 'react-native';
-export default function PostFeed() {
+import {ROUTES} from '../../../constants';
+export default function PostFeed({navigation}) {
+  const [liked, setLiked] = useState(false);
+  const [CommentMode, setCommentMode] = useState(false);
   return (
     <View style={styles.wrapper}>
       <View style={styles.container}>
@@ -26,14 +35,26 @@ export default function PostFeed() {
           Lorem ipsum dolor sit, amet consectetur adipisicing elit. Velit, sequi
         </Text>
         <View style={styles.btnContainer}>
+          <Pressable
+            style={styles.btn}
+            onPress={() => {
+              setLiked(!liked);
+            }}>
+            <Icon
+              style={{...styles.icons, color: liked ? 'crimson' : null}}
+              name={'favorite'}
+            />
+          </Pressable>
+
           <Pressable style={styles.btn}>
-            <Text style={styles.text}>Like</Text>
+            <Text style={styles.text}>
+              <Link to={{screen: ROUTES.MAKECOMMENT}}>
+                <Icon style={styles.icons} name="question-answer" />
+              </Link>
+            </Text>
           </Pressable>
           <Pressable style={styles.btn}>
-            <Text style={styles.text}>dislike</Text>
-          </Pressable>
-          <Pressable style={styles.btn}>
-            <Text style={styles.text}>Comment</Text>
+            <Icon style={styles.replyIcon} name="reply" />
           </Pressable>
         </View>
       </View>
@@ -102,5 +123,18 @@ const styles = StyleSheet.create({
     color: 'white',
     minWidth: '30%',
     minHeight: 30,
+  },
+  icons: {
+    fontSize: 24,
+    alignSelf: 'center',
+  },
+  likeIcon: {
+    fontSize: 24,
+    alignSelf: 'center',
+  },
+  replyIcon: {
+    fontSize: 24,
+    alignSelf: 'center',
+    transform: [{rotateY: '180deg'}],
   },
 });
