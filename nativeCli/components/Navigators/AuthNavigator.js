@@ -5,6 +5,7 @@ import Login from '../Screens/Auth/Login';
 import Register from '../Screens/Auth/Register';
 import DrawerNavigator from './DrawerNavigator';
 import SearchAndFind from '../Screens/Home/Feed/SearchAndFind';
+import CommentToPost from '../Screens/Home/Posts/Comments/CommentToPost';
 const Stack = createNativeStackNavigator();
 const AuthNavigator = () => {
   return (
@@ -12,7 +13,7 @@ const AuthNavigator = () => {
       initialRouteName={ROUTES.Login}
       screenOptions={{
         headerStyle: {
-          backgroundColor: '#1CED1321',
+          backgroundColor: 'red',
         },
         headerShown: false,
         headerTintColor: 'black',
@@ -35,6 +36,9 @@ const AuthNavigator = () => {
           headerShown: false,
         }}
       />
+      <Stack.Screen
+        name={ROUTES.MAKECOMMENT}
+        component={CommentToPost}></Stack.Screen>
     </Stack.Navigator>
   );
 };
