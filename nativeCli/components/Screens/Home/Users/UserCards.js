@@ -1,6 +1,8 @@
 import React from 'react';
 import Icon from 'react-native-vector-icons/AntDesign';
 import {useState} from 'react';
+import {API_ROOT} from '@env';
+
 import {
   Button,
   SafeAreaView,
@@ -18,24 +20,24 @@ const UserCards = ({user}) => {
   };
   return (
     <>
-      {cardActive === false ? (
+      {/*cardActive === false ? (
         <Pressable onPress={cardShown} style={styles.card}>
           <ImageBackground
             style={styles.image}
             source={{
-              uri: `https://live-app-rest-api.herokuapp.com/users/image/${user.username}`,
+              uri: `${API_ROOT}users/image/${user.username}`,
             }}>
-            <Text style={styles.imageTextHeader}>{user.email}</Text>
-            <Text style={styles.imageText}>*Son Zamanlarda Aktif</Text>
-            <Text style={styles.imageText}>İstanbul şehrinde yaşiyor</Text>
-            <Text style={styles.imageText}>55 km</Text>
+            <Text style={styles.imageTextHeader}>{user.username}</Text>
+            <Text style={styles.imageText}>{user.gender}</Text>
+            <Text style={styles.imageText}>{user.email}</Text>
+            <Text style={styles.imageText}>{user.firstname}</Text>
           </ImageBackground>
         </Pressable>
       ) : (
         <Pressable style={styles.profileNavCard} onPress={cardShown}>
           <ImageBackground
             source={{
-              uri: `https://live-app-rest-api.herokuapp.com/users/image/${user.username}`,
+              uri: `${API_ROOT}users/image/${user.username}`,
             }}
             style={styles.profileNav}>
             <Pressable onPress={cardShown} style={styles.profileNavButtons}>
@@ -59,7 +61,7 @@ const UserCards = ({user}) => {
             </Pressable>
           </ImageBackground>
         </Pressable>
-      )}
+              )*/}
     </>
   );
 };
@@ -71,8 +73,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   card: {
-    width: '95%',
-    height: '70%',
+    position: 'absolute',
+    width: '100%',
+    height: '100%',
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
@@ -84,6 +87,7 @@ const styles = StyleSheet.create({
     borderRadius: 20,
   },
   profileNavCard: {
+    position: 'absolute',
     backgroundColor: 'black',
     width: '95%',
     height: '70%',
