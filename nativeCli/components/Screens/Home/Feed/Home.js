@@ -21,7 +21,7 @@ export default function Home({navigation}) {
           </Link>
           <View style={{paddingBottom: windowHeight / 2 - 50}}>
             {array.map(idz => (
-              <PostFeed key={idz}></PostFeed>
+              <PostFeed key={idz} />
             ))}
           </View>
         </View>
