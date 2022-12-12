@@ -11,4 +11,5 @@ export default {
   BOTTOM: 'Bottom',
   USERINFO: 'UserInfo',
   SEARCH: 'Search',
+  MAKECOMMENT: 'MakeComment',
 };
