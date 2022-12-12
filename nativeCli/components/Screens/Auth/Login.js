@@ -1,5 +1,7 @@
+/* eslint-disable react/self-closing-comp */
 import {useEffect, useState} from 'react';
 import React from 'react';
+import {API_ROOT} from '@env';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {
   View,
@@ -11,54 +13,133 @@ import {
   ScrollView,
 } from 'react-native';
 import {ROUTES} from '../../constants';
+import {Formik} from 'formik';
+import * as Yup from 'yup';
+import InputError from './errors/InputError';
+import {loginRequest} from '../../requests/UserRequest';
 const SecondaryScreen = ({navigation}) => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const [responseData, setResponseData] = useState();
-  useEffect(() => {
-    console.debug(responseData);
-  }, [responseData]);
+  const [loading, setLoading] = useState(false);
 
-  const storeData = async value => {
+  useEffect(() => {}, []);
+
+  const setAccessToken = async value => {
     try {
-      await AsyncStorage.setItem('@user', value);
+      await AsyncStorage.setItem('@access_token', value);
     } catch (e) {
-      // saving error
+      console.debug(e);
     }
   };
-  const handleUsername = text => {
-    setUsername(text);
+  const setRefreshToken = async value => {
+    try {
+      await AsyncStorage.setItem('@refresh_token', value);
+    } catch (e) {
+      console.debug(e);
+    }
   };
-  const handlePw = text => {
-    setPassword(text);
+  const setCurrentUser = async value => {
+    try {
+      await AsyncStorage.setItem('@current_user', value);
+    } catch (e) {
+      console.debug(e);
+    }
   };
+
+  const SignupSchema = Yup.object().shape({
+    username: Yup.string()
+      .min(6, 'Username should contain at least 6 characters')
+      .required("Username can't be empty"),
+    password: Yup.string()
+      .min(8, 'Password should contain atleast 8 characters')
+      .required("Password can't be empty")
+      .matches(
+        '^(?=.*[A-Za-z])(?=.*\\d)(?=.*[@$!%*#?&])[A-Za-z\\d@$!%*#?&]{8,}$',
+        'Your password should contain a special character ',
+      ),
+  });
   return (
     <View style={styles.container}>
-      <Text style={{marginBottom: '15%'}}>L O G I N</Text>
-
+      {loading === true ? <Text>Girişe yönlendiriyorsunuz</Text> : null}
       <View>
-        <TextInput
-          onChangeText={handleUsername}
-          value={username}
-          placeholder="username"
-          style={styles.textInput}></TextInput>
-        <TextInput
-          secureTextEntry
-          onChangeText={handlePw}
-          value={password}
-          placeholder="password"
-          style={styles.textInput}></TextInput>
-        <Pressable
-          onPress={() => {
-            navigation.navigate(ROUTES.DRAWER);
-            storeData(username);
-          }}
-          title="button"
-          style={styles.button}>
-          <Text style={styles.text}>Gönder</Text>
-        </Pressable>
+        <Formik
+          validationSchema={SignupSchema}
+          initialValues={{email: '', password: ''}}
+          onSubmit={values => {
+            setLoading(true);
+            loginRequest(values.username, values.password, async response => {
+              if (response.toString().endsWith('403')) {
+                window.alert('Bad CREDENTIALS');
+              } else {
+                await setAccessToken(response.access_token);
+                await setRefreshToken(response.refresh_token);
+                await setCurrentUser(response.username);
+                navigation.navigate(ROUTES.DRAWER);
+              }
+            });
+            setLoading(false);
+          }}>
+          {({
+            handleChange,
+            handleBlur,
+            handleSubmit,
+            values,
+            errors,
+            touched,
+          }) => (
+            <View>
+              <Text style={{alignSelf: 'center', marginBottom: '15%'}}>
+                L O G I N
+              </Text>
+
+              <View>
+                <TextInput
+                  onChangeText={handleChange('username')}
+                  value={values.username}
+                  placeholder="username"
+                  onBlur={handleBlur('username')}
+                  style={styles.textInput}
+                  autoCapitalize={false}
+                  autoCorrect={false}
+                />
+                {errors.password && touched.password ? (
+                  <InputError
+                    error={errors.username}
+                    touched={touched.username}></InputError>
+                ) : null}
+              </View>
+
+              <View>
+                <TextInput
+                  secureTextEntry
+                  onChangeText={handleChange('password')}
+                  value={values.password}
+                  placeholder="password"
+                  onBlur={handleBlur('password')}
+                  style={styles.textInput}
+                  autoCapitalize={false}
+                  autoCorrect={false}
+                />
+                {errors.password && touched.password ? (
+                  <InputError
+                    error={errors.password}
+                    touched={touched.password}></InputError>
+                ) : null}
+              </View>
+              <Pressable
+                onPress={handleSubmit}
+                title="button"
+                style={styles.button}>
+                <Text style={styles.text}>Gönder</Text>
+              </Pressable>
+            </View>
+          )}
+        </Formik>
+
         <Pressable onPress={() => navigation.navigate(ROUTES.REGISTER)}>
-          <Text style={{alignSelf: 'center'}}>Hesabın yok mu kayıt ol</Text>
+          <Text style={{alignSelf: 'center', padding: 5}}>
+            Kayıt olmak için tıkla
+          </Text>
         </Pressable>
       </View>
     </View>
