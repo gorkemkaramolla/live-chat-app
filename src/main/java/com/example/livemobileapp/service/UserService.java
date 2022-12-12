@@ -109,8 +109,8 @@ public class UserService {
 
     }
 
-    public void getImage(HttpServletResponse response, String userId) throws IOException {
-        Optional<User> user = userRepository.findById(userId);
+    public void getImage(HttpServletResponse response, String username) throws IOException {
+        Optional<User> user = Optional.ofNullable(userRepository.findByUsername(username));
         if(user.isPresent())
         {
             User existUser = user.get();
@@ -145,5 +145,15 @@ public class UserService {
                 }
             }
         }
+    }
+
+    public UserInfoResponse getCurrentUser(String username) {
+       User currentUser= userRepository.findByUsername(username);
+        return new
+                UserInfoResponse(currentUser.getUsername(),
+                currentUser.getEmail(),
+                currentUser.getFirstname(),
+                currentUser.getLastname(),
+                currentUser.getGender());
     }
 }
