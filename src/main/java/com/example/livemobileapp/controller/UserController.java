@@ -35,6 +35,11 @@ public class UserController {
 
        return new ResponseEntity<>(userInfoResponse, HttpStatus.CREATED);
     }
+    @GetMapping()
+    public  ResponseEntity<UserInfoResponse> getCurrentUser(@RequestParam String username)
+    {
+        return new ResponseEntity<>(userService.getCurrentUser(username),HttpStatus.OK);
+    }
     @GetMapping("/{page}")
     public ResponseEntity<List<UserInfoResponse>> getUsers(@PathVariable Integer page) throws PageNotExistException {
         return new ResponseEntity<>(userService.getUsers(page),HttpStatus.OK);
