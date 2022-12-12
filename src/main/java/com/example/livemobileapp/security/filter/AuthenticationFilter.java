@@ -41,15 +41,20 @@ public class  AuthenticationFilter extends UsernamePasswordAuthenticationFilter 
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
         UserDetailsImpl user = (UserDetailsImpl) authResult.getPrincipal();
         String access_token = JwtGenerator.generateToken(user,request.getRequestURL().toString()
-                ,new Date(System.currentTimeMillis()),new Date(System.currentTimeMillis()+10*60*1000));
+                ,new Date(System.currentTimeMillis()),new Date(System.currentTimeMillis()+10*60*100000));
 
         String refresh_token  = JwtGenerator.generateToken(user,request.getRequestURL().toString()
-                ,new Date(System.currentTimeMillis()),new Date(System.currentTimeMillis()+20*60*1000));
+                ,new Date(System.currentTimeMillis()),new Date(System.currentTimeMillis()+20*60*100000));
 
         Map<String,String> tokens = new HashMap<>();
         tokens.put("access_token",access_token);
         tokens.put("refresh_token",refresh_token);
+        tokens.put("username",user.getUsername());
         response.setContentType(APPLICATION_JSON_VALUE);
+        log.info("access token is  : "+ access_token);
+        log.info("refresh token is  : "+ refresh_token);
+
+
         new ObjectMapper().writeValue(response.getOutputStream(),tokens);
     }
 }
