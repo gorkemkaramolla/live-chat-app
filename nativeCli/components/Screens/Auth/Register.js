@@ -17,9 +17,7 @@ import InputError from './errors/InputError';
 const MainScreen = ({navigation}) => {
   const [loading, setLoading] = useState(false);
   const [responseData, setResponseData] = useState('asd');
-  useEffect(() => {
-    console.debug(responseData);
-  }, [responseData]);
+
   const SignupSchema = Yup.object().shape({
     username: Yup.string()
       .min(6, 'Username should contain at least 6 characters')
