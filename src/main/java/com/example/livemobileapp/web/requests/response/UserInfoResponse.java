@@ -1,5 +1,6 @@
 package com.example.livemobileapp.web.requests.response;
 
+import com.example.livemobileapp.model.ProfilePicture;
 import lombok.Data;
 
 @Data
@@ -18,5 +19,6 @@ public class UserInfoResponse {
         this.firstname = firstname;
         this.lastname = lastname;
         this.gender = gender;
+
     }
 }
