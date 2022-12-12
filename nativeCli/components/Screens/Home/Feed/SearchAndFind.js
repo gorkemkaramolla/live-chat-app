@@ -39,14 +39,7 @@ const HomeFeed = ({navigation}) => {
         }
       }}
       scrollEventThrottle={600}>
-      <View
-        style={{
-          borderWidth: 2,
-          top: 155,
-          padding: 25,
-          borderColor: 'black',
-          position: 'absolute',
-        }}>
+      <View style={{}}>
         <Pressable
           onPress={() => {
             navigation.navigate(ROUTES.HOME);
@@ -84,7 +77,7 @@ const HomeFeed = ({navigation}) => {
 
 const styles = StyleSheet.create({
   container: {
-    paddingTop: 50,
+    paddingTop: 10,
   },
   view: {
     flex: 1,
