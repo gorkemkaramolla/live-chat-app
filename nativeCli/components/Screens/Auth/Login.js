@@ -18,8 +18,7 @@ import * as Yup from 'yup';
 import InputError from './errors/InputError';
 import {loginRequest} from '../../requests/UserRequest';
 const SecondaryScreen = ({navigation}) => {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
+  const [error, setError] = useState(false);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {}, []);
@@ -37,6 +36,11 @@ const SecondaryScreen = ({navigation}) => {
   const setCurrentUser = async value => {
     try {
       await AsyncStorage.setItem('@current_user', value);
+    } catch (e) {}
+  };
+  const setCurrentUserId = async value => {
+    try {
+      await AsyncStorage.setItem('@current_user_id', value);
     } catch (e) {}
   };
 
@@ -60,20 +64,24 @@ const SecondaryScreen = ({navigation}) => {
           validationSchema={SignupSchema}
           initialValues={{email: '', password: ''}}
           onSubmit={values => {
+            setError(false);
+
             setLoading(true);
             loginRequest(values.username, values.password, async response => {
-              console.debug('hello');
-
               if (response.toString().endsWith('403')) {
                 window.alert('Bad CREDENTIALS');
               } else {
                 await setAccessToken(response.access_token);
                 await setRefreshToken(response.refresh_token);
                 await setCurrentUser(response.username);
-                const currentUser = await AsyncStorage.getItem('@current_user');
+                await setCurrentUserId(response.userId);
+                const currentUser = await AsyncStorage.getItem(
+                  '@current_user_id',
+                );
                 console.debug('Current user: ' + currentUser);
                 if (currentUser !== null) {
                   navigation.navigate(ROUTES.DRAWER);
+                } else {
                 }
               }
             });
@@ -126,12 +134,16 @@ const SecondaryScreen = ({navigation}) => {
                     touched={touched.password}></InputError>
                 ) : null}
               </View>
-              <Pressable
-                onPress={handleSubmit}
-                title="button"
-                style={styles.button}>
-                <Text style={styles.text}>Gönder</Text>
-              </Pressable>
+              {error ? (
+                <Text>Error</Text>
+              ) : (
+                <Pressable
+                  onPress={handleSubmit}
+                  title="button"
+                  style={styles.button}>
+                  <Text style={styles.text}>Gönder</Text>
+                </Pressable>
+              )}
             </View>
           )}
         </Formik>

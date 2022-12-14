@@ -20,12 +20,12 @@ const UserCards = ({user}) => {
   };
   return (
     <>
-      {/*cardActive === false ? (
+      {cardActive === false ? (
         <Pressable onPress={cardShown} style={styles.card}>
           <ImageBackground
             style={styles.image}
             source={{
-              uri: `${API_ROOT}users/image/${user.username}`,
+              uri: `${API_ROOT}users/image/${user.userId}`,
             }}>
             <Text style={styles.imageTextHeader}>{user.username}</Text>
             <Text style={styles.imageText}>{user.gender}</Text>
@@ -37,7 +37,7 @@ const UserCards = ({user}) => {
         <Pressable style={styles.profileNavCard} onPress={cardShown}>
           <ImageBackground
             source={{
-              uri: `${API_ROOT}users/image/${user.username}`,
+              uri: `${API_ROOT}users/image/${user.userId}`,
             }}
             style={styles.profileNav}>
             <Pressable onPress={cardShown} style={styles.profileNavButtons}>
@@ -61,7 +61,7 @@ const UserCards = ({user}) => {
             </Pressable>
           </ImageBackground>
         </Pressable>
-              )*/}
+      )}
     </>
   );
 };

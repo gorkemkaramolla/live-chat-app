@@ -54,7 +54,7 @@ public class UserService {
             user.setEmail(userCreateRequest.getEmail());
 
             userRepository.save(user);
-            return new UserInfoResponse(user.getUsername(),user.getEmail(),user.getFirstname(),user.getLastname(),user.getGender());
+            return new UserInfoResponse(user.getId(),user.getUsername(),user.getEmail(),user.getFirstname(),user.getLastname(),user.getGender());
 
         }
         throw new BadCredentialsException("Credentials are not correct");
@@ -69,6 +69,7 @@ public class UserService {
             List<User> users =      mongoTemplate.find(query,User.class);
             return (users.stream()
                     .map(user-> new UserInfoResponse(
+                            user.getId(),
                             user.getUsername()
                             ,user.getEmail()
                             ,user.getFirstname()
@@ -88,7 +89,7 @@ public class UserService {
             existUser.setLastname(userInformationsRequest.getLastname());
             existUser.setFirstname(userInformationsRequest.getFirstname());
             userRepository.save(existUser);
-            return new UserInfoResponse(existUser.getUsername(),existUser.getEmail(),existUser.getFirstname(),existUser.getLastname(),existUser.getGender());
+            return new UserInfoResponse(existUser.getId(),existUser.getUsername(),existUser.getEmail(),existUser.getFirstname(),existUser.getLastname(),existUser.getGender());
 
         }
         return null;
@@ -109,8 +110,8 @@ public class UserService {
 
     }
 
-    public void getImage(HttpServletResponse response, String username) throws IOException {
-        Optional<User> user = Optional.ofNullable(userRepository.findByUsername(username));
+    public void getImage(HttpServletResponse response, String userId) throws IOException {
+        Optional<User> user = (userRepository.findById(userId));
         if(user.isPresent())
         {
             User existUser = user.get();
@@ -147,13 +148,19 @@ public class UserService {
         }
     }
 
-    public UserInfoResponse getCurrentUser(String username) {
-       User currentUser= userRepository.findByUsername(username);
-        return new
-                UserInfoResponse(currentUser.getUsername(),
-                currentUser.getEmail(),
-                currentUser.getFirstname(),
-                currentUser.getLastname(),
-                currentUser.getGender());
+    public UserInfoResponse getCurrentUser(String userId) {
+       Optional<User> currentUser= userRepository.findById(userId);
+       if(currentUser.isPresent())
+       {
+           User existUser = currentUser.get();
+           return new
+                   UserInfoResponse(existUser.getId(),existUser.getUsername(),
+                   existUser.getEmail(),
+                   existUser.getFirstname(),
+                   existUser.getLastname(),
+                   existUser.getGender());
+       }
+       return null;
+
     }
 }

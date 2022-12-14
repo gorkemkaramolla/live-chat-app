@@ -3,7 +3,7 @@ const params = new URLSearchParams();
 import {API_ROOT} from '@env';
 import qs from 'qs';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-axios.defaults.timeout = 2500;
+axios.defaults.timeout = 4500;
 retrieveData = async () => {
   const value = await AsyncStorage.getItem('@access_token');
   return value;
@@ -41,9 +41,10 @@ const loginRequest = async (username, password, callback) => {
     });
 };
 //USERS
-const getCurrentUser = async (username, callback) => {
-  axios
-    .get(`${API_ROOT}users?username=${username}`, {
+const getCurrentUser = async (userId, callback) => {
+  console.debug('getCurrentUser axios ' + userId);
+  await axios
+    .get(`${API_ROOT}users?userId=${userId}`, {
       headers: {
         Authorization: `Bearer ${await AsyncStorage.getItem('@access_token')}`,
       },
@@ -56,7 +57,7 @@ const getCurrentUser = async (username, callback) => {
     });
 };
 const getUsersReq = async (page, callback) => {
-  axios
+  await axios
     .get(`${API_ROOT}users/${page}`, {
       headers: {
         Authorization: `Bearer ${await AsyncStorage.getItem('@access_token')}`,
@@ -69,9 +70,9 @@ const getUsersReq = async (page, callback) => {
       console.error(err);
     });
 };
-const getUserProfilePic = async (username, callback) => {
-  axios
-    .get(`${API_ROOT}users/image/${username}`, {
+const getUserProfilePic = async (userId, callback) => {
+  await axios
+    .get(`${API_ROOT}users/image/${userId}`, {
       headers: {
         Authorization: `Bearer ${await AsyncStorage.getItem('@access_token')}}`,
       },

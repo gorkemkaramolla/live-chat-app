@@ -10,7 +10,6 @@ import React, {useEffect, useState} from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {getCurrentUser} from '../../requests/UserRequest';
 export default function Profile() {
-  const [username, setUsername] = useState('');
   const [userInformations, setUserInformations] = useState({
     username: '',
     email: '',
@@ -18,11 +17,11 @@ export default function Profile() {
     lastname: '',
     gender: '',
   });
+
   const getUsername = async () => {
-    const userName = await AsyncStorage.getItem('@current_user');
-    if (userName !== null || userName !== '' || userName !== undefined) {
-      setUsername(userName);
-      getCurrentUser(username, response => {
+    const userId = await AsyncStorage.getItem('@current_user_id');
+    if (userId !== null || userId !== '' || userId !== undefined) {
+      getCurrentUser(userId, response => {
         setUserInformations(prev => ({
           ...prev,
           username: response.username,
@@ -37,7 +36,8 @@ export default function Profile() {
 
   useEffect(() => {
     getUsername();
-  }, [AsyncStorage.getItem('@current_user')]);
+  }, []);
+
   return (
     <SafeAreaView>
       <Text>{userInformations.username}</Text>

@@ -13,7 +13,8 @@ public class UserInfoResponse {
     private String gender;
 
 
-    public UserInfoResponse(String username, String email, String firstname, String lastname, String gender) {
+    public UserInfoResponse(String userId,String username, String email, String firstname, String lastname, String gender) {
+        this.userId= userId;
         this.username = username;
         this.email = email;
         this.firstname = firstname;

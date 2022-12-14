@@ -49,6 +49,7 @@ public class  AuthenticationFilter extends UsernamePasswordAuthenticationFilter 
         Map<String,String> tokens = new HashMap<>();
         tokens.put("access_token",access_token);
         tokens.put("refresh_token",refresh_token);
+        tokens.put("userId",user.getId());
         tokens.put("username",user.getUsername());
         response.setContentType(APPLICATION_JSON_VALUE);
         log.info("access token is  : "+ access_token);

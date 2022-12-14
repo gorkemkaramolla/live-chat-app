@@ -7,6 +7,7 @@ import com.example.livemobileapp.web.requests.request.UserCreateRequest;
 import com.example.livemobileapp.web.requests.request.UserInformationsRequest;
 import com.example.livemobileapp.web.requests.response.UserInfoResponse;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 
 import org.springframework.http.ResponseEntity;
@@ -22,6 +23,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/users")
 @AllArgsConstructor
+@Slf4j
 public class UserController {
     private final UserService userService;
     @GetMapping("/refresh")
@@ -36,9 +38,18 @@ public class UserController {
        return new ResponseEntity<>(userInfoResponse, HttpStatus.CREATED);
     }
     @GetMapping()
-    public  ResponseEntity<UserInfoResponse> getCurrentUser(@RequestParam String username)
+    public  ResponseEntity getCurrentUser(@RequestParam String userId)
     {
-        return new ResponseEntity<>(userService.getCurrentUser(username),HttpStatus.OK);
+       UserInfoResponse currentUser = userService.getCurrentUser(userId);
+       if(currentUser !=null)
+       {
+           log.info(currentUser.getUserId());
+           return new ResponseEntity<>(currentUser,HttpStatus.OK);
+
+       }
+        log.error("user couldnt be loaded");
+
+        return new ResponseEntity<>("User couldn't be loaded",HttpStatus.NOT_FOUND);
     }
     @GetMapping("/{page}")
     public ResponseEntity<List<UserInfoResponse>> getUsers(@PathVariable Integer page) throws PageNotExistException {
@@ -58,12 +69,12 @@ public class UserController {
 
     }
     @PutMapping("/upload")
-    public void singleFileUpload(@RequestParam() MultipartFile file, @RequestParam() String username) throws IOException {
-        userService.uploadFile(file,username);
+    public void singleFileUpload(@RequestParam() MultipartFile file, @RequestParam() String userId) throws IOException {
+        userService.uploadFile(file,userId);
     }
-    @GetMapping(value = "/image/{username}")
-    public void getImage(HttpServletResponse response,@PathVariable String username) throws IOException {
-       userService.getImage(response,username);
+    @GetMapping(value = "/image/{userId}")
+    public void getImage(HttpServletResponse response,@PathVariable String userId) throws IOException {
+       userService.getImage(response,userId);
     }
 
     @ExceptionHandler({BadCredentialsException.class,PageNotExistException.class})
