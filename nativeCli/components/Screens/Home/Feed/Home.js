@@ -9,22 +9,25 @@ import PostFeed from '../Posts/PostFeed';
 import {ScrollView} from 'react-native-gesture-handler';
 
 import {Dimensions} from 'react-native';
+import {SafeAreaView} from 'react-native-safe-area-context';
 const windowHeight = Dimensions.get('window').height;
 const array = [1, 2, 3, 4, 5];
 export default function Home({navigation}) {
   return (
     <View>
       <ScrollView contentContainerStyle={{}}>
-        <View style={styles.home}>
-          <Link style={styles.linkSearch} to={{screen: ROUTES.SEARCH}}>
-            <Icon style={styles.linkSearchIcon} name="ios-search"></Icon>
-          </Link>
-          <View style={{paddingBottom: windowHeight / 2 - 50}}>
-            {array.map(idz => (
-              <PostFeed key={idz} />
-            ))}
+        <SafeAreaView>
+          <View style={styles.home}>
+            <Link style={styles.linkSearch} to={{screen: ROUTES.SEARCH}}>
+              <Icon style={styles.linkSearchIcon} name="ios-search"></Icon>
+            </Link>
+            <View style={{paddingBottom: windowHeight / 2 - 50}}>
+              {array.map(idz => (
+                <PostFeed key={idz} />
+              ))}
+            </View>
           </View>
-        </View>
+        </SafeAreaView>
       </ScrollView>
     </View>
   );

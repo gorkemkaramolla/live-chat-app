@@ -3,7 +3,7 @@ const params = new URLSearchParams();
 import {API_ROOT} from '@env';
 import qs from 'qs';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
+axios.defaults.timeout = 2500;
 retrieveData = async () => {
   const value = await AsyncStorage.getItem('@access_token');
   return value;

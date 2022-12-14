@@ -6,6 +6,7 @@ import {getUsersReq} from '../../../requests/UserRequest';
 import {StyleSheet} from 'react-native';
 import Pressable from 'react-native/Libraries/Components/Pressable/Pressable';
 import {ROUTES} from '../../../constants';
+import {SafeAreaView} from 'react-native-safe-area-context';
 
 const HomeFeed = ({navigation}) => {
   const [paging, setPaging] = useState(0);
@@ -39,38 +40,40 @@ const HomeFeed = ({navigation}) => {
         }
       }}
       scrollEventThrottle={600}>
-      <View style={{}}>
-        <Pressable
-          onPress={() => {
-            navigation.navigate(ROUTES.HOME);
-          }}>
-          <Text>back</Text>
-        </Pressable>
-      </View>
-      <View style={styles.storyContainer}>
-        <Pressable onPress={story}>
-          <View style={styles.story}></View>
-        </Pressable>
-        <Pressable onPress={story}>
-          <View style={styles.story}></View>
-        </Pressable>
-        <Pressable onPress={story}>
-          <View style={styles.story}></View>
-        </Pressable>
-        <Pressable onPress={story}>
-          <View style={styles.story}></View>
-        </Pressable>
-        <Pressable onPress={story}>
-          <View style={styles.story}></View>
-        </Pressable>
-      </View>
-
-      {users.map((user, index) => (
-        <View style={styles.view} key={index}>
-          <UserCards user={user}></UserCards>
+      <SafeAreaView>
+        <View style={{}}>
+          <Pressable
+            onPress={() => {
+              navigation.navigate(ROUTES.HOME);
+            }}>
+            <Text>back</Text>
+          </Pressable>
         </View>
-      ))}
-      <Text>Loading...</Text>
+        <View style={styles.storyContainer}>
+          <Pressable onPress={story}>
+            <View style={styles.story}></View>
+          </Pressable>
+          <Pressable onPress={story}>
+            <View style={styles.story}></View>
+          </Pressable>
+          <Pressable onPress={story}>
+            <View style={styles.story}></View>
+          </Pressable>
+          <Pressable onPress={story}>
+            <View style={styles.story}></View>
+          </Pressable>
+          <Pressable onPress={story}>
+            <View style={styles.story}></View>
+          </Pressable>
+        </View>
+
+        {users.map((user, index) => (
+          <View style={styles.view} key={index}>
+            <UserCards user={user}></UserCards>
+          </View>
+        ))}
+        <Text>Loading...</Text>
+      </SafeAreaView>
     </ScrollView>
   );
 };

@@ -27,23 +27,17 @@ const SecondaryScreen = ({navigation}) => {
   const setAccessToken = async value => {
     try {
       await AsyncStorage.setItem('@access_token', value);
-    } catch (e) {
-      console.debug(e);
-    }
+    } catch (e) {}
   };
   const setRefreshToken = async value => {
     try {
       await AsyncStorage.setItem('@refresh_token', value);
-    } catch (e) {
-      console.debug(e);
-    }
+    } catch (e) {}
   };
   const setCurrentUser = async value => {
     try {
       await AsyncStorage.setItem('@current_user', value);
-    } catch (e) {
-      console.debug(e);
-    }
+    } catch (e) {}
   };
 
   const SignupSchema = Yup.object().shape({
@@ -68,13 +62,19 @@ const SecondaryScreen = ({navigation}) => {
           onSubmit={values => {
             setLoading(true);
             loginRequest(values.username, values.password, async response => {
+              console.debug('hello');
+
               if (response.toString().endsWith('403')) {
                 window.alert('Bad CREDENTIALS');
               } else {
                 await setAccessToken(response.access_token);
                 await setRefreshToken(response.refresh_token);
                 await setCurrentUser(response.username);
-                navigation.navigate(ROUTES.DRAWER);
+                const currentUser = await AsyncStorage.getItem('@current_user');
+                console.debug('Current user: ' + currentUser);
+                if (currentUser !== null) {
+                  navigation.navigate(ROUTES.DRAWER);
+                }
               }
             });
             setLoading(false);

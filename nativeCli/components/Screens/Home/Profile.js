@@ -1,4 +1,11 @@
-import {View, Text, Pressable, TextInput, StyleSheet} from 'react-native';
+import {
+  View,
+  SafeAreaView,
+  Text,
+  Pressable,
+  TextInput,
+  StyleSheet,
+} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {getCurrentUser} from '../../requests/UserRequest';
@@ -11,12 +18,11 @@ export default function Profile() {
     lastname: '',
     gender: '',
   });
-
-  useEffect(() => {
-    const getUsername = async () => {
-      setUsername(await AsyncStorage.getItem('@current_user'));
+  const getUsername = async () => {
+    const userName = await AsyncStorage.getItem('@current_user');
+    if (userName !== null || userName !== '' || userName !== undefined) {
+      setUsername(userName);
       getCurrentUser(username, response => {
-        console.debug(response);
         setUserInformations(prev => ({
           ...prev,
           username: response.username,
@@ -26,41 +32,20 @@ export default function Profile() {
           gender: response.gender,
         }));
       });
-    };
+    }
+  };
+
+  useEffect(() => {
     getUsername();
-  }, [username]);
+  }, [AsyncStorage.getItem('@current_user')]);
   return (
-    <View>
+    <SafeAreaView>
       <Text>{userInformations.username}</Text>
-      {userInformations.firstname === null ? (
-        <TextInput
-          maxLength={12}
-          placeholder="firstname"
-          style={styles.textInput}
-          autoCapitalize={false}
-          autoCorrect={false}
-        />
-      ) : (
-        <Text>baba</Text>
-      )}
-      {userInformations.lastname === null ? (
-        <TextInput
-          maxLength={12}
-          placeholder="lastname"
-          style={styles.textInput}
-          autoCapitalize={false}
-          autoCorrect={false}
-        />
-      ) : (
-        <Text>baba</Text>
-      )}
-      {userInformations.gender === null ? (
-        <Text>gender +</Text>
-      ) : (
-        <Text>baba</Text>
-      )}
+      <Text>{userInformations.firstname}</Text>
+      <Text>{userInformations.lastname}</Text>
+      <Text>{userInformations.gender}</Text>
       <Text>{userInformations.email}</Text>
-    </View>
+    </SafeAreaView>
   );
 }
 const styles = StyleSheet.create({
