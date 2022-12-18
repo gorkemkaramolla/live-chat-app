@@ -1,5 +1,6 @@
 package com.example.livemobileapp.model;
 import lombok.Data;
+import org.bson.types.Binary;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -10,12 +11,9 @@ import java.time.LocalDateTime;
 public class Post {
     @Id
     private String id;
-    private String username;
     private String userId;
-    private String firstname;
-    private String lastname;
     private String content;
     private LocalDateTime createdAt = LocalDateTime.now();
-    private ProfilePicture profilePicture ;
+    private Binary file;
 
 }
