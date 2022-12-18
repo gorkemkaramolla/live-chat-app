@@ -1,7 +1,8 @@
 /* eslint-disable quotes */
 /* eslint-disable react-native/no-inline-styles */
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Link} from '@react-navigation/native';
+import {Dimensions} from 'react-native';
 
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import CommentToPost from './Comments/CommentToPost';
@@ -12,28 +13,47 @@ import {
   ImageBackground,
   StyleSheet,
   Pressable,
+  Image,
 } from 'react-native';
 import {ROUTES} from '../../../constants';
-export default function PostFeed({navigation}) {
+const windowHeight = Dimensions.get('window').height;
+
+export default function PostFeed({navigation, post}) {
   const [liked, setLiked] = useState(false);
   const [CommentMode, setCommentMode] = useState(false);
+  useEffect(() => {}, []);
+
   return (
     <View style={styles.wrapper}>
       <View style={styles.container}>
-        <View style={styles.userinfo}>
-          <Text style={styles.text}>Today 8:32 PM</Text>
-          <Text style={styles.text}>Clément M.</Text>
-        </View>
+        <View style={styles.userInfo}>
+          <Image
+            style={styles.userProfileLogo}
+            source={{uri: 'data:image/png;base64,' + post.profilePic.data}}
+          />
+          <View style={styles.userText}>
+            <Text style={styles.text}>{post.username}</Text>
 
-        <ImageBackground
-          style={styles.image}
-          source={{
-            uri: `https://images.unsplash.com/photo-1508921912186-1d1a45ebb3c1?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1974&q=80`,
-          }}
-        />
-        <Text style={styles.comment}>
-          Lorem ipsum dolor sit, amet consectetur adipisicing elit. Velit, sequi
-        </Text>
+            <Text style={styles.text}>{post.createdAt}</Text>
+          </View>
+        </View>
+        {post.file !== null ? (
+          <ImageBackground
+            style={styles.image}
+            source={{
+              uri: 'data:image/png;base64,' + post.file.data,
+            }}
+          />
+        ) : null}
+
+        <Text style={styles.comment}>{post.content}</Text>
+        <Pressable
+          onPress={() => {
+            window.alert('number of likes is 0');
+          }}>
+          <Text style={styles.numberLikes}>0 likes</Text>
+        </Pressable>
+
         <View style={styles.btnContainer}>
           <Pressable
             style={styles.btn}
@@ -47,7 +67,7 @@ export default function PostFeed({navigation}) {
           </Pressable>
 
           <Pressable style={styles.btn}>
-            <Text style={styles.text}>
+            <Text style={{alignSelf: 'center'}}>
               <Link to={{screen: ROUTES.MAKECOMMENT}}>
                 <Icon style={styles.icons} name="question-answer" />
               </Link>
@@ -65,64 +85,82 @@ const styles = StyleSheet.create({
   wrapper: {
     margin: 0,
     padding: 0,
-    maxWidth: '100%',
-  },
-  container: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
     alignContent: 'center',
-    minWidth: '90%',
+    minWidth: '100%',
     padding: 5,
     margin: 5,
-    minHeight: 300,
-    maxHeight: 500,
+  },
+  container: {
+    borderBottomWidth: 2,
+    borderBottomColor: '#ccc',
+    borderBottomRadius: 10,
   },
   image: {
     textAlign: 'center',
-    marginBottom: 20,
+    alignSelf: 'center',
     fontSize: 24,
     backgroundColor: 'white',
-    minHeight: '60%',
-    minWidth: '90%',
+    aspectRatio: 1 * 1,
+    width: '100%',
+    minHeight: 300,
+    resizeMode: 'cover',
   },
   comment: {
     textAlign: 'left',
-    paddingLeft: 15,
+    paddingLeft: '2%',
     fontSize: 16,
-    minWidth: '90%',
-    maxWidth: '90%',
-  },
+    minWidth: '100%',
+    lineHeight: 30,
 
-  userinfo: {
-    maxWidth: '90%',
-    minWidth: '90%',
+    fontFamily: 'Roboto-Light',
+    color: '#241616',
+  },
+  numberLikes: {
+    fontSize: 12,
+    margin: '2%',
+  },
+  userProfileLogo: {
+    width: 48,
+    height: 48,
+    marginRight: '4%',
+  },
+  userInfo: {
+    maxWidth: '100%',
     flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'baseline',
-    maxHeight: '5%',
-    marginBottom: 10,
+    justifyContent: 'flex-start',
+    alignItems: 'flex-start',
+    minHeight: '5%',
+    marginTop: 20,
+
+    margin: '2%',
+  },
+  userText: {
+    marginTop: '1%',
+    textAlign: 'left',
   },
   text: {
-    fontSize: 14,
-    alignSelf: 'center',
+    fontSize: 16,
+    fontFamily: 'Roboto-Light',
+    lineHeight: 20,
+    color: '#241616',
   },
+
   btnContainer: {
     flex: 1,
-    minWidth: '90%',
-    maxWidth: '90%',
+
     maxHeight: 40,
     justifyContent: 'space-between',
+    flexWrap: 'nowrap',
     alignItems: 'center',
     flexDirection: 'row',
   },
   btn: {
-    borderBottomWidth: 2,
-    borderBottomColor: '#ccc',
-    borderBottomRadius: 10,
     color: 'white',
-    minWidth: '30%',
-    minHeight: 30,
+    minWidth: '30.33333333333%',
+    minHeight: 24,
   },
   icons: {
     fontSize: 24,
