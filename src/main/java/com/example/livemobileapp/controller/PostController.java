@@ -2,11 +2,16 @@ package com.example.livemobileapp.controller;
 import com.example.livemobileapp.model.Post;
 import com.example.livemobileapp.service.PostService;
 import com.example.livemobileapp.web.requests.request.AddPostRequest;
+import com.example.livemobileapp.web.requests.response.PostResponse;
+import com.mongodb.lang.Nullable;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -14,21 +19,18 @@ import java.util.List;
 @AllArgsConstructor
 public class PostController {
     private final PostService postService;
-    @PostMapping
-    public ResponseEntity<Post> addPost(@RequestBody AddPostRequest postRequest)
-    {
-        return new ResponseEntity<>( postService.addPost(postRequest), HttpStatus.CREATED);
+    @PostMapping(consumes = {MediaType.MULTIPART_FORM_DATA_VALUE,MediaType.APPLICATION_JSON_VALUE})
+    public ResponseEntity<Post> addPost(@Nullable @RequestPart("file") MultipartFile file, @RequestPart("post") AddPostRequest postRequest) throws IOException {
+        return new ResponseEntity<>( postService.addPost(file,postRequest), HttpStatus.CREATED);
     }
     @GetMapping("/{page}")
-    public ResponseEntity<List<Post>> getPageablePost(@PathVariable Integer page)
+    public ResponseEntity<List<PostResponse>> getPageablePost(@PathVariable Integer page)
     {
-        List<Post> posts = postService.getPageablePosts(page);
+        List<PostResponse> posts = postService.getPageablePosts(page);
 
-        return (page ==null ?
-                new ResponseEntity<>(HttpStatus.BAD_REQUEST):
-                posts!=null ?
-                        new ResponseEntity<>(posts, HttpStatus.OK) :
-                        new ResponseEntity<>(HttpStatus.BAD_REQUEST));
+        return posts != null ?
+                new ResponseEntity<>(posts, HttpStatus.OK) :
+                new ResponseEntity<>(HttpStatus.BAD_REQUEST);
 
     }
 }
