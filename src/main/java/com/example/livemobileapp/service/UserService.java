@@ -54,7 +54,7 @@ public class UserService {
             user.setEmail(userCreateRequest.getEmail());
 
             userRepository.save(user);
-            return new UserInfoResponse(user.getId(),user.getUsername(),user.getEmail(),user.getFirstname(),user.getLastname(),user.getGender());
+            return new UserInfoResponse(user.getId(),user.getUsername(),user.getEmail(),user.getFirstname(),user.getLastname(),user.getGender(),user.getProfilePicture());
 
         }
         throw new BadCredentialsException("Credentials are not correct");
@@ -74,7 +74,7 @@ public class UserService {
                             ,user.getEmail()
                             ,user.getFirstname()
                             ,user.getLastname()
-                            ,user.getGender()))
+                            ,user.getGender(),user.getProfilePicture()))
                     .collect(Collectors.toList()));
         }
     throw new PageNotExistException("Requested page does not exist");
@@ -89,7 +89,7 @@ public class UserService {
             existUser.setLastname(userInformationsRequest.getLastname());
             existUser.setFirstname(userInformationsRequest.getFirstname());
             userRepository.save(existUser);
-            return new UserInfoResponse(existUser.getId(),existUser.getUsername(),existUser.getEmail(),existUser.getFirstname(),existUser.getLastname(),existUser.getGender());
+            return new UserInfoResponse(existUser.getId(),existUser.getUsername(),existUser.getEmail(),existUser.getFirstname(),existUser.getLastname(),existUser.getGender(),existUser.getProfilePicture());
 
         }
         return null;
@@ -158,7 +158,8 @@ public class UserService {
                    existUser.getEmail(),
                    existUser.getFirstname(),
                    existUser.getLastname(),
-                   existUser.getGender());
+                   existUser.getGender(),
+                   existUser.getProfilePicture());
        }
        return null;
 
