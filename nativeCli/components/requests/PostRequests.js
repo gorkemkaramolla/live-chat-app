@@ -19,4 +19,32 @@ const getPageablePost = async (pageable, callback) => {
     });
 };
 
-export {getPageablePost};
+const addPost = async (imageData, callback) => {
+  await axios
+    .post(
+      `${API_ROOT}posts`,
+      {
+        file: imageData,
+
+        content: 'pablo büyük adamdır narcos dizisini izlemelisiniz',
+        userId: '6394cbac5e66002d850342b4',
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${await AsyncStorage.getItem(
+            '@access_token',
+          )}`,
+          //
+        },
+      },
+    )
+    .then(response => {
+      console.debug(response.data);
+      callback('response data' + response.data);
+    })
+    .catch(err => {
+      console.debug('error' + err);
+    });
+};
+
+export {getPageablePost, addPost};

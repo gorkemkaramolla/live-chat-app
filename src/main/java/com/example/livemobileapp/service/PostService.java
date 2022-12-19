@@ -7,6 +7,7 @@ import com.example.livemobileapp.repository.UserRepository;
 import com.example.livemobileapp.web.requests.request.AddPostRequest;
 import com.example.livemobileapp.web.requests.response.PostResponse;
 import lombok.AllArgsConstructor;
+import org.apache.tomcat.util.codec.binary.Base64;
 import org.bson.BsonBinarySubType;
 import org.bson.types.Binary;
 import org.springframework.data.domain.Page;
@@ -44,7 +45,7 @@ public class PostService {
                 userRepository.findById(post.getUserId()).get().getProfilePicture().getFile(),post.getCreatedAt().format(format))).collect(Collectors.toList());
     }
 
-    public Post addPost(MultipartFile postPic, AddPostRequest postRequest) throws IOException {
+    public Post addPost(String file, AddPostRequest postRequest)  {
         Optional<User> user = userRepository.findById(postRequest.getUserId());
         if(user.isPresent())
         {
@@ -52,8 +53,9 @@ public class PostService {
             Post post = new Post();
             post.setUserId(existUser.getId());
             post.setContent(postRequest.getContent());
-            if (postPic != null) {
-                post.setFile(new Binary(BsonBinarySubType.BINARY, postPic.getInputStream().readAllBytes()));
+            byte[] string = Base64.decodeBase64(file);
+            if (file != null) {
+                post.setFile(new Binary(BsonBinarySubType.BINARY, string));
             }
 
 

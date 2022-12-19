@@ -6,4 +6,5 @@ import lombok.Data;
 public class AddPostRequest {
     private String userId;
     private String content;
+    private String file;
 }
