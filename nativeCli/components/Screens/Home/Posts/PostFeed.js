@@ -144,7 +144,6 @@ const styles = StyleSheet.create({
   text: {
     fontSize: 16,
     fontFamily: 'Roboto-Light',
-    lineHeight: 20,
     color: '#241616',
   },
 

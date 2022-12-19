@@ -3,7 +3,6 @@ const params = new URLSearchParams();
 import {API_ROOT} from '@env';
 import qs from 'qs';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-axios.defaults.timeout = 4500;
 
 const getPageablePost = async (pageable, callback) => {
   await axios

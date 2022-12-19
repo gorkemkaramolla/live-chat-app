@@ -18,7 +18,6 @@ export default function Home({navigation}) {
   useEffect(() => {
     getPageablePost(0, response => {
       setPosts(response);
-      console.debug(response);
     });
   }, []);
 
