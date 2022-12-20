@@ -83,10 +83,45 @@ const getUserProfilePic = async (userId, callback) => {
       console.error(err);
     });
 };
+//Update User Informations
+const updateUser = async (
+  userId,
+  username,
+  firstname,
+  lastname,
+  gender,
+  callback,
+) => {
+  await axios
+    .get(
+      `${API_ROOT}users/update`,
+      {
+        userId: userId,
+        username: username,
+        firstname: firstname,
+        lastname: lastname,
+        gender: gender,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${await AsyncStorage.getItem(
+            '@access_token',
+          )}}`,
+        },
+      },
+    )
+    .then(response => {
+      callback(response.data);
+    })
+    .catch(err => {
+      console.error(err);
+    });
+};
 export {
   registerRequest,
   getUsersReq,
   getUserProfilePic,
   loginRequest,
   getCurrentUser,
+  updateUser,
 };
