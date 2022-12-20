@@ -43,13 +43,13 @@ export default function Message() {
     });
   };
   return (
-    <View>
+    <SafeAreaView>
       <Pressable onPress={openCamera}>
         <Text>open camera</Text>
       </Pressable>
       <Pressable onPress={openGallery}>
         <Text>open gallery</Text>
       </Pressable>
-    </View>
+    </SafeAreaView>
   );
 }
