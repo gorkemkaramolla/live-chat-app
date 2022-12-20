@@ -60,4 +60,4 @@ const addPost = async (imageData, callback) => {
     });
 };
 
-export {getPageablePost, addPost};
+export {getPageablePost, addPost, getUsersPost};
