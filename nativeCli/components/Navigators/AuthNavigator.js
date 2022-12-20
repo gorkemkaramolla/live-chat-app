@@ -10,7 +10,7 @@ const Stack = createNativeStackNavigator();
 const AuthNavigator = () => {
   return (
     <Stack.Navigator
-      initialRouteName={ROUTES.Login}
+      initialRouteName={ROUTES.HOME}
       screenOptions={{
         headerStyle: {
           backgroundColor: 'red',

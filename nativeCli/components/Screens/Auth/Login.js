@@ -60,6 +60,9 @@ const SecondaryScreen = ({navigation}) => {
     <View style={styles.container}>
       {loading === true ? <Text>Girişe yönlendiriyorsunuz</Text> : null}
       <View>
+        <Pressable onPress={() => navigation.navigate(ROUTES.DRAWER)}>
+          <Text>Move on</Text>
+        </Pressable>
         <Formik
           validationSchema={SignupSchema}
           initialValues={{email: '', password: ''}}

@@ -15,28 +15,36 @@ const windowHeight = Dimensions.get('window').height;
 const array = [1, 2, 3, 4, 5];
 export default function Home({navigation}) {
   const [posts, setPosts] = useState([]);
+  const [loading, setLoading] = useState(true);
   useEffect(() => {
     getPageablePost(0, response => {
       setPosts(response);
+      setLoading(false);
     });
   }, [posts]);
 
   return (
     <View>
-      <ScrollView contentContainerStyle={{}}>
+      {loading ? (
         <SafeAreaView>
-          <View style={styles.home}>
-            <Link style={styles.linkSearch} to={{screen: ROUTES.SEARCH}}>
-              <Icon style={styles.linkSearchIcon} name="ios-search"></Icon>
-            </Link>
-            <View style={{paddingBottom: windowHeight / 7}}>
-              {posts.map(post => (
-                <PostFeed key={post.postId} post={post}></PostFeed>
-              ))}
-            </View>
-          </View>
+          <Text>Loading....</Text>
         </SafeAreaView>
-      </ScrollView>
+      ) : (
+        <ScrollView contentContainerStyle={{}}>
+          <SafeAreaView>
+            <View style={styles.home}>
+              <Link style={styles.linkSearch} to={{screen: ROUTES.SEARCH}}>
+                <Icon style={styles.linkSearchIcon} name="ios-search"></Icon>
+              </Link>
+              <View style={{paddingBottom: windowHeight / 7}}>
+                {posts.map(post => (
+                  <PostFeed key={post.postId} post={post}></PostFeed>
+                ))}
+              </View>
+            </View>
+          </SafeAreaView>
+        </ScrollView>
+      )}
     </View>
   );
 }

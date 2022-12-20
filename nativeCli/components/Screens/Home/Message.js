@@ -14,7 +14,7 @@ export default function Message() {
   const RNFS = require('react-native-fs');
 
   const [selectedImage, setSelectedImage] = useState();
-  let options = {saveToPhotos: true, mediaType: 'photo'};
+  let options = {saveToPhotos: true, mediaType: 'photo', quality: 0.01};
 
   const openGallery = async () => {
     const result = launchImageLibrary(options).then(res => {
