@@ -18,7 +18,20 @@ const getPageablePost = async (pageable, callback) => {
       return err.data;
     });
 };
-
+const getUsersPost = async (userId, callback) => {
+  await axios
+    .get(`${API_ROOT}posts?userId=${userId}`, {
+      headers: {
+        Authorization: `Bearer ${await AsyncStorage.getItem('@access_token')}`,
+      },
+    })
+    .then(response => {
+      callback(response.data);
+    })
+    .catch(err => {
+      return err.data;
+    });
+};
 const addPost = async (imageData, callback) => {
   await axios
     .post(

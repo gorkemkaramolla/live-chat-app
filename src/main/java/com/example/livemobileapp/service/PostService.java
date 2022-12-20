@@ -7,6 +7,7 @@ import com.example.livemobileapp.repository.UserRepository;
 import com.example.livemobileapp.web.requests.request.AddPostRequest;
 import com.example.livemobileapp.web.requests.response.PostResponse;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.tomcat.util.codec.binary.Base64;
 import org.bson.BsonBinarySubType;
 import org.bson.types.Binary;
@@ -27,6 +28,7 @@ import java.util.stream.Collectors;
 
 @Service
 @AllArgsConstructor
+@Slf4j
 public class PostService {
     private final PostRepository postRepository;
     private final UserRepository userRepository;
@@ -66,4 +68,37 @@ public class PostService {
 
 
     }
+
+    public List<PostResponse> getUsersPost(String userId) {
+
+        List<Post> posts = postRepository.findByUserId(userId);
+        if(posts!=null)
+        {
+            DateTimeFormatter format = DateTimeFormatter.ofPattern("dd MMMM, HH:mm");
+            List<PostResponse> postResponseList = new ArrayList<>();
+            posts.forEach(post -> {
+                Optional<User> user = userRepository.findById(post.getUserId());
+
+                if(user.isPresent())
+                {
+                    User existUser = user.get();
+                    postResponseList.add(new PostResponse(post.getId(),
+                            existUser.getUsername(),
+                            existUser.getId(),
+                            existUser.getUsername(),
+                            existUser.getLastname(),
+                            post.getContent(),
+                            post.getFile(),
+                            existUser.getProfilePicture().getFile(),
+                            post.getCreatedAt().format(format)));
+                }
+            });
+            log.error(String.valueOf(postResponseList));
+            return postResponseList;
+        }
+        return null;
+
+    }
+
+
 }
