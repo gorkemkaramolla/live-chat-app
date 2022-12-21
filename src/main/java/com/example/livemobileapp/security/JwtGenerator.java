@@ -36,7 +36,6 @@ public class JwtGenerator {
     public static boolean validateToken(String token) throws IOException {
         try {
             Jwts.parser().setSigningKey("secret").parseClaimsJws(token);
-            log.error(Boolean.toString(!isTokenExpired(token)));
             return !isTokenExpired(token);
         }
         catch (SignatureException | UnsupportedJwtException | IllegalArgumentException | ExpiredJwtException | MalformedJwtException exception)

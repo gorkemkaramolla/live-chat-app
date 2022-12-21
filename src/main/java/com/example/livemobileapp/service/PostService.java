@@ -47,7 +47,7 @@ public class PostService {
                 userRepository.findById(post.getUserId()).get().getProfilePicture().getFile(),post.getCreatedAt().format(format))).collect(Collectors.toList());
     }
 
-    public Post addPost(String file, AddPostRequest postRequest)  {
+    public Post addPost( AddPostRequest postRequest)  {
         Optional<User> user = userRepository.findById(postRequest.getUserId());
         if(user.isPresent())
         {
@@ -55,8 +55,10 @@ public class PostService {
             Post post = new Post();
             post.setUserId(existUser.getId());
             post.setContent(postRequest.getContent());
-            byte[] string = Base64.decodeBase64(file);
+            String file = postRequest.getFile();
             if (file != null) {
+                byte[] string = Base64.decodeBase64(file);
+
                 post.setFile(new Binary(BsonBinarySubType.BINARY, string));
             }
 

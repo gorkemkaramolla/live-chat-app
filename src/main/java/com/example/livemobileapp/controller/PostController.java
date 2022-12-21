@@ -26,7 +26,7 @@ public class PostController {
     public ResponseEntity<Post> addPost(@Nullable @RequestBody() AddPostRequest postRequest){
 
         assert postRequest != null;
-        return new ResponseEntity<>( postService.addPost(postRequest.getFile(),postRequest), HttpStatus.CREATED);
+        return new ResponseEntity<>( postService.addPost(postRequest), HttpStatus.CREATED);
     }
     @GetMapping("/{page}")
     public ResponseEntity getPageablePost(@PathVariable Integer page)

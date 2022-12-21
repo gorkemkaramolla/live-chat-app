@@ -21,6 +21,8 @@ const windowHeight = Dimensions.get('window').height;
 export default function PostFeed({navigation, post}) {
   const [liked, setLiked] = useState(false);
   const [CommentMode, setCommentMode] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
+
   useEffect(() => {}, []);
 
   return (
