@@ -93,7 +93,7 @@ const updateUser = async (
   callback,
 ) => {
   await axios
-    .get(
+    .put(
       `${API_ROOT}users/update`,
       {
         userId: userId,
