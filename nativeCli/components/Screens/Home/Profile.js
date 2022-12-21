@@ -69,7 +69,11 @@ const Profile = () => {
       }
     }
     getUser();
-  }, []);
+  }, [
+    userInformations.gender,
+    userInformations.firstname,
+    userInformations.lastname,
+  ]);
 
   return (
     <SafeAreaView style={styles.container}>
@@ -140,9 +144,15 @@ const Profile = () => {
               style={{...styles.button, ...styles.buttonClose, marginTop: 10}}
               onPress={() => {
                 console.log(userId);
-                updateUser(userId, firstName, lastName, gender, res =>
-                  console.log(res),
-                );
+                updateUser(userId, firstName, lastName, gender, res => {
+                  setUserInformations(prev => ({
+                    ...prev,
+                    firstname: firstName,
+                    lastname: lastName,
+                    gender: gender,
+                  }));
+                  console.log(res);
+                });
               }}>
               <Text style={styles.textStyle}>Update Credentials</Text>
             </Pressable>

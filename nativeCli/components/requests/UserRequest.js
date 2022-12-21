@@ -84,20 +84,12 @@ const getUserProfilePic = async (userId, callback) => {
     });
 };
 //Update User Informations
-const updateUser = async (
-  userId,
-  username,
-  firstname,
-  lastname,
-  gender,
-  callback,
-) => {
+const updateUser = async (userId, firstname, lastname, gender, callback) => {
   await axios
     .put(
       `${API_ROOT}users/update`,
       {
         userId: userId,
-        username: username,
         firstname: firstname,
         lastname: lastname,
         gender: gender,
@@ -106,7 +98,7 @@ const updateUser = async (
         headers: {
           Authorization: `Bearer ${await AsyncStorage.getItem(
             '@access_token',
-          )}}`,
+          )}`,
         },
       },
     )
