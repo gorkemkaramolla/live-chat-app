@@ -32,15 +32,15 @@ const getUsersPost = async (userId, callback) => {
       return err.data;
     });
 };
-const addPost = async (imageData, callback) => {
+const addPost = async (userId, file, content, callback) => {
   await axios
     .post(
       `${API_ROOT}posts`,
       {
-        file: imageData,
+        file: file,
 
-        content: 'pablo büyük adamdır narcos dizisini izlemelisiniz',
-        userId: '6394cbac5e66002d850342b4',
+        content: content,
+        userId: userId,
       },
       {
         headers: {
