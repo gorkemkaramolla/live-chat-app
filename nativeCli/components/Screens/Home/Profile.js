@@ -16,6 +16,7 @@ import SelectDropdown from 'react-native-select-dropdown';
 import React, {useEffect, useState} from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {getCurrentUser, updateUser} from '../../requests/UserRequest';
+import {ROUTES} from '../../constants';
 
 const DATA = [
   {
@@ -35,7 +36,7 @@ const PostItem = ({style, src}) => (
   </View>
 );
 
-const Profile = () => {
+const Profile = ({navigation}) => {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [gender, setGender] = useState('');
@@ -74,7 +75,25 @@ const Profile = () => {
     userInformations.firstname,
     userInformations.lastname,
   ]);
-
+  const logout = async () => {
+    const userId = await AsyncStorage.getItem('@current_user_id');
+    removeFew = async () => {
+      const keys = ['@access_token', '@current_user', '@current_user_id'];
+      try {
+        await AsyncStorage.multiRemove(keys);
+        console.debug(
+          'Application starts keys are removed all keys exist : ' +
+            (await AsyncStorage.getAllKeys()),
+        );
+      } catch (e) {
+        // remove error
+      }
+    };
+    if (userId !== null || userId !== '' || userId !== undefined) {
+      removeFew();
+      navigation.navigate(ROUTES.LOGIN);
+    }
+  };
   return (
     <SafeAreaView style={styles.container}>
       <Pressable onPress={() => setModalVisible(true)}>
@@ -155,6 +174,9 @@ const Profile = () => {
                 });
               }}>
               <Text style={styles.textStyle}>Update Credentials</Text>
+            </Pressable>
+            <Pressable onPress={logout}>
+              <Text>Logout</Text>
             </Pressable>
             <Pressable
               style={{
