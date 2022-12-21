@@ -86,8 +86,18 @@ public class UserService {
         {
             User existUser= user.get();
             existUser.setGender(userInformationsRequest.getGender());
-            existUser.setLastname(userInformationsRequest.getLastname());
-            existUser.setFirstname(userInformationsRequest.getFirstname());
+            if(userInformationsRequest.getFirstname()!=null )
+            {
+                existUser.setFirstname(userInformationsRequest.getFirstname());
+            }
+            if(userInformationsRequest.getLastname()!=null )
+            {
+                existUser.setLastname(userInformationsRequest.getLastname());
+
+            }
+            if(userInformationsRequest.getGender()!=null){
+                existUser.setGender(userInformationsRequest.getGender());
+            }
             userRepository.save(existUser);
             return new UserInfoResponse(existUser.getId(),existUser.getUsername(),existUser.getEmail(),existUser.getFirstname(),existUser.getLastname(),existUser.getGender(),existUser.getProfilePicture());
 

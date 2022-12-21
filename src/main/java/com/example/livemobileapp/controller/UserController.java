@@ -26,6 +26,7 @@ import java.util.List;
 @Slf4j
 public class UserController {
     private final UserService userService;
+
     @GetMapping("/refresh")
     public void refreshAccessToken(HttpServletRequest request,HttpServletResponse response) throws IOException {
         userService.getAccessToken(request,response);
@@ -57,7 +58,7 @@ public class UserController {
     }
 
 
-    @PutMapping("/info")
+    @PutMapping("/update")
     public ResponseEntity<String> updateInfo(@RequestBody UserInformationsRequest userInformationsRequest)
     {
         UserInfoResponse userInfoResponse = userService.updateInfo(userInformationsRequest);
