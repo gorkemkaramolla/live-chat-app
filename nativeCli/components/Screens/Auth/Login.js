@@ -84,6 +84,10 @@ const SecondaryScreen = ({navigation}) => {
                 console.debug('Current user: ' + currentUser);
                 if (currentUser !== null) {
                   navigation.navigate(ROUTES.DRAWER);
+                  navigation.reset({
+                    index: 0,
+                    routes: [{name: ROUTES.DRAWER}],
+                  });
                 } else {
                 }
               }

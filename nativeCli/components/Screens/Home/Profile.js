@@ -92,6 +92,10 @@ const Profile = ({navigation}) => {
     if (userId !== null || userId !== '' || userId !== undefined) {
       removeFew();
       navigation.navigate(ROUTES.LOGIN);
+      navigation.reset({
+        index: 0,
+        routes: [{name: ROUTES.LOGIN}],
+      });
     }
   };
   return (

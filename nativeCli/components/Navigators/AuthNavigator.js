@@ -8,35 +8,45 @@ import SearchAndFind from '../Screens/Home/Feed/SearchAndFind';
 import CommentToPost from '../Screens/Home/Posts/Comments/CommentToPost';
 const Stack = createNativeStackNavigator();
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {useState, useEffect} from 'react';
-const getUserId = async () => {
-  const userId = await AsyncStorage.getItem('@current_user_id');
-  if (userId === null || userId === '' || userId === undefined) {
-    return false;
-  } else {
-    return true;
-  }
-};
+import {useState, useEffect, useMemo} from 'react';
+import {View, Text} from 'react-native';
+
 const AuthNavigator = () => {
-  const [userId, setUserId] = useState(false);
+  const [userId, setUserId] = useState(null);
+  const [loading, setLoading] = useState(false);
+  async function loadName() {
+    try {
+      const name = await AsyncStorage.getItem('@current_user_id');
+      console.debug(name);
+
+      setUserId(name);
+    } catch (e) {
+      console.error('Failed to load name.');
+    }
+  }
+  useEffect(() => {}, []);
   useEffect(() => {
-    getUserId().then(res => {
-      console.debug(res);
-      setUserId(res);
-    });
-  }, []);
-  if (userId) {
+    setLoading(true);
+
+    loadName();
+    setLoading(true);
+  }, [userId]);
+
+  if (loading) {
     return (
       <Stack.Navigator
-        initialRouteName={ROUTES.HOME}
         screenOptions={{
           headerStyle: {
             backgroundColor: 'red',
           },
+
           headerShown: false,
           headerTintColor: 'black',
           headerBackTitleVisible: false,
         }}>
+        {!userId && (
+          <Stack.Screen name={ROUTES.LOGIN} component={Login} options={{}} />
+        )}
         <Stack.Screen
           name={ROUTES.DRAWER}
           component={DrawerNavigator}
@@ -44,6 +54,12 @@ const AuthNavigator = () => {
             headerShown: false,
           }}
         />
+        <Stack.Screen
+          name={ROUTES.REGISTER}
+          component={Register}
+          options={{}}
+        />
+
         <Stack.Screen
           name={ROUTES.SEARCH}
           component={SearchAndFind}
@@ -58,32 +74,10 @@ const AuthNavigator = () => {
     );
   } else {
     return (
-      <Stack.Navigator
-        initialRouteName={ROUTES.LOGIN}
-        screenOptions={{
-          headerStyle: {
-            backgroundColor: 'red',
-          },
-          headerShown: false,
-          headerTintColor: 'black',
-          headerBackTitleVisible: false,
-        }}>
-        <Stack.Screen name={ROUTES.LOGIN} component={Login} options={{}} />
-        <Stack.Screen
-          name={ROUTES.REGISTER}
-          component={Register}
-          options={{}}
-        />
-        <Stack.Screen
-          name={ROUTES.DRAWER}
-          component={DrawerNavigator}
-          options={{
-            headerShown: false,
-          }}
-        />
-      </Stack.Navigator>
+      <View>
+        <Text>Loading...</Text>
+      </View>
     );
   }
 };
-
 export default AuthNavigator;

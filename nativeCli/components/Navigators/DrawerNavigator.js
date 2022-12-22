@@ -1,9 +1,8 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {createDrawerNavigator} from '@react-navigation/drawer';
 import BottomNavigator from './BottomNavigator';
 import {ROUTES} from '../constants';
 const Drawer = createDrawerNavigator();
-
 const DrawerNavigator = () => {
   return (
     <Drawer.Navigator
