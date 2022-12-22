@@ -7,7 +7,6 @@ import {Link} from '@react-navigation/native';
 import {StyleSheet} from 'react-native';
 import PostFeed from '../Posts/PostFeed';
 import {ScrollView} from 'react-native-gesture-handler';
-
 import {Dimensions} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {getPageablePost} from '../../../requests/PostRequests';
@@ -17,11 +16,13 @@ export default function Home({navigation}) {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   useEffect(() => {
+    const date = new Date();
+    console.debug(date);
     getPageablePost(0, response => {
       setPosts(response);
       setLoading(false);
     });
-  }, [posts]);
+  }, []);
 
   return (
     <View>

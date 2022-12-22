@@ -12,72 +12,58 @@ import {useState, useEffect, useMemo} from 'react';
 import {View, Text} from 'react-native';
 
 const AuthNavigator = () => {
-  const [userId, setUserId] = useState(null);
+  const [userId, setUserId] = useState(loadName());
   const [loading, setLoading] = useState(false);
   async function loadName() {
     try {
-      const name = await AsyncStorage.getItem('@current_user_id');
-      console.debug(name);
-
-      setUserId(name);
+      await AsyncStorage.getItem('@current_user_id')
+        .then(res => console.debug(res))
+        .finally(res => {
+          setUserId(res);
+        });
     } catch (e) {
       console.error('Failed to load name.');
     }
   }
-  useEffect(() => {}, []);
   useEffect(() => {
     setLoading(true);
 
     loadName();
     setLoading(true);
-  }, [userId]);
+  }, []);
+  return (
+    <Stack.Navigator
+      initialRouteName={userId === null ? ROUTES.LOGIN : ROUTES.DRAWER}
+      screenOptions={{
+        headerStyle: {
+          backgroundColor: 'red',
+        },
 
-  if (loading) {
-    return (
-      <Stack.Navigator
-        screenOptions={{
-          headerStyle: {
-            backgroundColor: 'red',
-          },
-
+        headerShown: false,
+        headerTintColor: 'black',
+        headerBackTitleVisible: false,
+      }}>
+      <Stack.Screen
+        name={ROUTES.DRAWER}
+        component={DrawerNavigator}
+        options={{
           headerShown: false,
-          headerTintColor: 'black',
-          headerBackTitleVisible: false,
-        }}>
-        {!userId && (
-          <Stack.Screen name={ROUTES.LOGIN} component={Login} options={{}} />
-        )}
-        <Stack.Screen
-          name={ROUTES.DRAWER}
-          component={DrawerNavigator}
-          options={{
-            headerShown: false,
-          }}
-        />
-        <Stack.Screen
-          name={ROUTES.REGISTER}
-          component={Register}
-          options={{}}
-        />
+        }}
+      />
+      <Stack.Screen name={ROUTES.LOGIN} component={Login} options={{}} />
 
-        <Stack.Screen
-          name={ROUTES.SEARCH}
-          component={SearchAndFind}
-          options={{
-            headerShown: false,
-          }}
-        />
-        <Stack.Screen
-          name={ROUTES.MAKECOMMENT}
-          component={CommentToPost}></Stack.Screen>
-      </Stack.Navigator>
-    );
-  } else {
-    return (
-      <View>
-        <Text>Loading...</Text>
-      </View>
-    );
-  }
+      <Stack.Screen name={ROUTES.REGISTER} component={Register} options={{}} />
+      <Stack.Screen
+        name={ROUTES.SEARCH}
+        component={SearchAndFind}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
+        name={ROUTES.MAKECOMMENT}
+        component={CommentToPost}></Stack.Screen>
+    </Stack.Navigator>
+  );
 };
 export default AuthNavigator;

@@ -91,6 +91,7 @@ const Profile = ({navigation}) => {
     };
     if (userId !== null || userId !== '' || userId !== undefined) {
       removeFew();
+      setModalVisible(false);
       navigation.navigate(ROUTES.LOGIN);
       navigation.reset({
         index: 0,
@@ -231,46 +232,55 @@ const Profile = ({navigation}) => {
           }}
         />
       </View>
-
-      <SectionList
-        sections={DATA}
-        horizontal={true}
-        keyExtractor={(item, index) => item + index}
-        renderItem={({item}) => <Item title={item} />}
-      />
-      <SectionList
-        style={{
-          margin: 20,
-          width: '100%',
-          display: 'flex',
-        }}
-        sections={DATA}
-        keyExtractor={(item, index) => item + index}
-        renderItem={({index}) => {
-          if (index === DATA[0].data.length - 1) {
-            return (
-              <PostItem
-                style={{marginBottom: height / 10}}
-                src={{
-                  uri:
-                    'data:image/png;base64,' +
-                    userInformations.profilePicture?.file?.data,
-                }}
-              />
-            );
-          } else {
-            return (
-              <PostItem
-                src={{
-                  uri:
-                    'data:image/png;base64,' +
-                    userInformations.profilePicture?.file?.data,
-                }}
-              />
-            );
-          }
-        }}
-      />
+      <View>
+        <SectionList
+          contentContainerStyle={{
+            justifyContent: 'space-between',
+            flex: 1,
+          }}
+          style={{}}
+          sections={DATA}
+          horizontal={true}
+          keyExtractor={(item, index) => item + index}
+          renderItem={({item}) => (
+            <Pressable style={styles.item}>
+              <Text style={styles.title}>{item}</Text>
+            </Pressable>
+          )}
+        />
+        <View style={{height: 20}}></View>
+        <SectionList
+          contentContainerStyle={{
+            paddingBottom: height / 2,
+          }}
+          sections={DATA}
+          keyExtractor={(item, index) => item + index}
+          renderItem={({index}) => {
+            if (index === DATA[0].data.length - 1) {
+              return (
+                <PostItem
+                  style={{marginBottom: height / 10}}
+                  src={{
+                    uri:
+                      'data:image/png;base64,' +
+                      userInformations.profilePicture?.file?.data,
+                  }}
+                />
+              );
+            } else {
+              return (
+                <PostItem
+                  src={{
+                    uri:
+                      'data:image/png;base64,' +
+                      userInformations.profilePicture?.file?.data,
+                  }}
+                />
+              );
+            }
+          }}
+        />
+      </View>
     </SafeAreaView>
   );
 };
@@ -278,30 +288,22 @@ const styles = StyleSheet.create({
   container: {
     // flex: 1,
     // paddingTop: StatusBar.currentHeight,
-    display: 'flex',
+    flex: 1,
     width: '100%',
-    justifyContent: 'center',
     alignItems: 'center',
   },
   item: {
-    backgroundColor: 'rgb(52,120,246)',
-    paddingTop: 0,
-    padding: 8,
-    textAlign: 'center',
-    marginHorizontal: 20,
-    borderRadius: 5,
-    display: 'flex',
+    flex: 1,
     alignItems: 'center',
     justifyContent: 'center',
+    backgroundColor: 'rgb(52,120,246)',
+    borderRadius: 5,
   },
 
   title: {
-    fontSize: 18,
-    paddingTop: 2,
-    padding: 6,
+    paddingHorizontal: 20,
+    paddingVertical: 15,
     color: '#fff',
-    textAlign: 'center',
-    display: 'flex',
   },
 
   centeredView: {

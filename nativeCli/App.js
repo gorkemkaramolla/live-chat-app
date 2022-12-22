@@ -3,7 +3,7 @@ import {StyleSheet} from 'react-native';
 import {SafeAreaView} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 import AuthNavigator from './components/Navigators/AuthNavigator';
-import {useEffect} from 'react';
+import {useEffect, useState} from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 export default function App() {
   // useEffect(() => {
@@ -21,6 +21,7 @@ export default function App() {
   //   };
   //   removeFew();
   // }, []);
+
   return (
     <NavigationContainer>
       <AuthNavigator />
