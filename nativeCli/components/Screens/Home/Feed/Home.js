@@ -1,5 +1,5 @@
-import {View, Text} from 'react-native';
-import React, {useEffect, useState} from 'react';
+import {View, Text, RefreshControl} from 'react-native';
+import React, {useEffect, useState, useCallback} from 'react';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Pressable from 'react-native/Libraries/Components/Pressable/Pressable';
 import {ROUTES} from '../../../constants';
@@ -15,15 +15,22 @@ const array = [1, 2, 3, 4, 5];
 export default function Home({navigation}) {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
+
   useEffect(() => {
-    const date = new Date();
-    console.debug(date);
+    console.debug('stagechanged');
     getPageablePost(0, response => {
       setPosts(response);
       setLoading(false);
     });
+  }, [refreshing]);
+  const wait = timeout => {
+    return new Promise(resolve => setTimeout(resolve, timeout));
+  };
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    wait(2000).then(() => setRefreshing(false));
   }, []);
-
   return (
     <View>
       {loading ? (
@@ -31,8 +38,11 @@ export default function Home({navigation}) {
           <Text>Loading....</Text>
         </SafeAreaView>
       ) : (
-        <ScrollView contentContainerStyle={{}}>
-          <SafeAreaView>
+        <SafeAreaView>
+          <ScrollView
+            refreshControl={
+              <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+            }>
             <View style={styles.home}>
               <Link style={styles.linkSearch} to={{screen: ROUTES.SEARCH}}>
                 <Icon style={styles.linkSearchIcon} name="ios-search"></Icon>
@@ -43,13 +53,23 @@ export default function Home({navigation}) {
                 ))}
               </View>
             </View>
-          </SafeAreaView>
-        </ScrollView>
+          </ScrollView>
+        </SafeAreaView>
       )}
     </View>
   );
 }
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  scrollView: {
+    flex: 1,
+    backgroundColor: 'pink',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+
   home: {
     alignItems: 'center',
   },
@@ -59,6 +79,5 @@ const styles = StyleSheet.create({
   },
   linkSearchIcon: {
     fontSize: 24,
-    position: 'relative',
   },
 });

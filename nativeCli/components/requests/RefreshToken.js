@@ -32,14 +32,12 @@ const getAccessToken = async callback => {
           Buffer.from(base64, 'base64').toString('binary'),
         );
         var date = new Date();
-        console.debug('old exp: ' + decodedData.exp * 1000);
-        console.debug('newdate: ' + date.valueOf());
+
         if (decodedData.exp * 1000 >= date.valueOf()) {
           console.debug('old access Token');
           return callback(token);
         } else {
           getRefreshToken(token, response => {
-            console.debug('new access Token');
             return callback(response.access_token);
           });
         }

@@ -17,7 +17,7 @@ const AuthNavigator = () => {
   async function loadName() {
     try {
       await AsyncStorage.getItem('@current_user_id')
-        .then(res => console.debug(res))
+        .then(res => {})
         .finally(res => {
           setUserId(res);
         });

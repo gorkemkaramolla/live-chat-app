@@ -14,6 +14,7 @@ const getPageablePost = async (pageable, callback) => {
         },
       })
       .then(response => {
+        console.debug('response' + response.data);
         callback(response.data);
       })
       .catch(err => {
@@ -56,7 +57,6 @@ const addPost = async (userId, file, content, callback) => {
         },
       )
       .then(response => {
-        console.debug(response.data);
         callback('response data' + response.data);
       })
       .catch(err => {

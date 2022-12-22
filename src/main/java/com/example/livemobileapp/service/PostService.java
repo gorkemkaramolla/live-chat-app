@@ -37,14 +37,25 @@ public class PostService {
 
         Page<Post> posts = postRepository.findAll(pageable);
         DateTimeFormatter format = DateTimeFormatter.ofPattern("dd MMMM, HH:mm");
-        return posts.stream().map(post -> new PostResponse(post.getId(),
-                userRepository.findById(post.getUserId()).get().getUsername(),
-                userRepository.findById(post.getUserId()).get().getId(),
-                userRepository.findById(post.getUserId()).get().getFirstname(),
-                userRepository.findById(post.getUserId()).get().getLastname(),
-                post.getContent(),
-                post.getFile(),
-                userRepository.findById(post.getUserId()).get().getProfilePicture().getFile(),post.getCreatedAt().format(format))).collect(Collectors.toList());
+        List<PostResponse> postResponseList = new ArrayList<>();
+        posts.forEach(post -> {
+            Optional<User> user = userRepository.findById(post.getUserId());
+            if(user.isPresent())
+            {
+                User existUser = user.get();
+                postResponseList.add(new PostResponse(post.getId(),
+                        existUser.getUsername(),
+                        existUser.getId(),
+                        existUser.getUsername(),
+                        existUser.getLastname(),
+                        post.getContent(),
+                        post.getFile(),
+                        existUser.getProfilePicture().getFile(),
+                        post.getCreatedAt().format(format)));
+            }
+        });
+        log.error(String.valueOf(postResponseList));
+        return postResponseList;
     }
 
     public Post addPost( AddPostRequest postRequest)  {
