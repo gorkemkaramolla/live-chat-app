@@ -5,6 +5,7 @@ import {NavigationContainer} from '@react-navigation/native';
 import AuthNavigator from './components/Navigators/AuthNavigator';
 import {useEffect, useState} from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {getAccessToken} from './components/requests/RefreshToken';
 export default function App() {
   // useEffect(() => {
   //   removeFew = async () => {

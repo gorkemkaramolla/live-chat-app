@@ -39,12 +39,13 @@ public class  AuthenticationFilter extends UsernamePasswordAuthenticationFilter 
 
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
+        long expireMilliseconds = Long.parseLong("7889400000");
         UserDetailsImpl user = (UserDetailsImpl) authResult.getPrincipal();
         String access_token = JwtGenerator.generateToken(user,request.getRequestURL().toString()
-                ,new Date(System.currentTimeMillis()),new Date(System.currentTimeMillis()+10*60*100000));
+                ,new Date(System.currentTimeMillis()),new Date(System.currentTimeMillis()+ 3600000));
 
         String refresh_token  = JwtGenerator.generateToken(user,request.getRequestURL().toString()
-                ,new Date(System.currentTimeMillis()),new Date(System.currentTimeMillis()+20*60*100000));
+                ,new Date(System.currentTimeMillis()),new Date(System.currentTimeMillis() +expireMilliseconds));
 
         Map<String,String> tokens = new HashMap<>();
         tokens.put("access_token",access_token);

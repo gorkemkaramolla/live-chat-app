@@ -3,6 +3,8 @@ const params = new URLSearchParams();
 import {API_ROOT} from '@env';
 import qs from 'qs';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {getAccessToken} from './RefreshToken';
+
 retrieveData = async () => {
   const value = await AsyncStorage.getItem('@access_token');
   return value;
@@ -40,74 +42,81 @@ const loginRequest = async (username, password, callback) => {
     });
 };
 //USERS
+
 const getCurrentUser = async (userId, callback) => {
-  console.debug('getCurrentUser axios ' + userId);
-  await axios
-    .get(`${API_ROOT}users?userId=${userId}`, {
-      headers: {
-        Authorization: `Bearer ${await AsyncStorage.getItem('@access_token')}`,
-      },
-    })
-    .then(response => {
-      callback(response.data);
-    })
-    .catch(e => {
-      console.debug('getCurrentUser error ' + e);
-    });
+  getAccessToken(async resx => {
+    await axios
+      .get(`${API_ROOT}users?userId=${userId}`, {
+        headers: {
+          Authorization: `Bearer ${resx}`,
+        },
+      })
+      .then(response => {
+        callback(response.data);
+      })
+      .catch(e => {
+        console.debug('getCurrentUser error ' + e);
+      });
+  });
 };
 const getUsersReq = async (page, callback) => {
-  await axios
-    .get(`${API_ROOT}users/${page}`, {
-      headers: {
-        Authorization: `Bearer ${await AsyncStorage.getItem('@access_token')}`,
-      },
-    })
-    .then(response => {
-      callback(response.data);
-    })
-    .catch(err => {
-      console.error(err);
-    });
+  getAccessToken(async resx => {
+    await axios
+      .get(`${API_ROOT}users/${page}`, {
+        headers: {
+          Authorization: `Bearer ${resx},
+          )}`,
+        },
+      })
+      .then(response => {
+        callback(response.data);
+      })
+      .catch(err => {
+        console.error(err);
+      });
+  });
 };
 const getUserProfilePic = async (userId, callback) => {
-  await axios
-    .get(`${API_ROOT}users/image/${userId}`, {
-      headers: {
-        Authorization: `Bearer ${await AsyncStorage.getItem('@access_token')}}`,
-      },
-    })
-    .then(response => {
-      callback(response.data);
-    })
-    .catch(err => {
-      console.error(err);
-    });
+  getAccessToken(async resx => {
+    await axios
+      .get(`${API_ROOT}users/image/${userId}`, {
+        headers: {
+          Authorization: `Bearer ${resx}}`,
+        },
+      })
+      .then(response => {
+        callback(response.data);
+      })
+      .catch(err => {
+        console.error(err);
+      });
+  });
 };
 //Update User Informations
 const updateUser = async (userId, firstname, lastname, gender, callback) => {
-  await axios
-    .put(
-      `${API_ROOT}users/update`,
-      {
-        userId: userId,
-        firstname: firstname,
-        lastname: lastname,
-        gender: gender,
-      },
-      {
-        headers: {
-          Authorization: `Bearer ${await AsyncStorage.getItem(
-            '@access_token',
-          )}`,
+  getAccessToken(async resx => {
+    await axios
+      .put(
+        `${API_ROOT}users/update`,
+        {
+          userId: userId,
+          firstname: firstname,
+          lastname: lastname,
+          gender: gender,
         },
-      },
-    )
-    .then(response => {
-      callback(response.data);
-    })
-    .catch(err => {
-      console.error(err);
-    });
+        {
+          headers: {
+            Authorization: `Bearer ${resx}`,
+          },
+        },
+      )
+      .then(response => {
+        callback(response.data);
+      })
+      .catch(err => {
+        console.error(err);
+      });
+  });
 };
 export {
   registerRequest,
