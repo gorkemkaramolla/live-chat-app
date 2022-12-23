@@ -22,7 +22,6 @@ const getPageablePost = async (pageable, callback) => {
       });
   });
 };
-
 const getUsersPost = async (userId, callback) => {
   await getAccessToken(async resx => {
     await axios

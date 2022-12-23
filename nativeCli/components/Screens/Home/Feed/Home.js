@@ -1,4 +1,4 @@
-import {View, Text, RefreshControl} from 'react-native';
+import {View, Text, RefreshControl, FlatList} from 'react-native';
 import React, {useEffect, useState, useCallback} from 'react';
 import Icon from 'react-native-vector-icons/Ionicons';
 import Pressable from 'react-native/Libraries/Components/Pressable/Pressable';
@@ -17,20 +17,24 @@ export default function Home({navigation}) {
   const [refreshing, setRefreshing] = useState(false);
 
   useEffect(() => {
-    console.debug('stagechanged');
     getPageablePost(0, response => {
+      console.debug(response);
       setPosts(response);
       setLoading(false);
     });
   }, []);
+
   const wait = timeout => {
     return new Promise(resolve => setTimeout(resolve, timeout));
   };
   const onRefresh = useCallback(async () => {
     setRefreshing(true);
+    setLoading(true);
     try {
-      const newPosts = await getPageablePost(0);
-      setPosts(newPosts);
+      await getPageablePost(0, res => {
+        setPosts(res);
+        setLoading(false);
+      });
     } catch (error) {
       console.error(error);
     } finally {
@@ -38,31 +42,22 @@ export default function Home({navigation}) {
     }
   }, []);
   return (
-    <View>
+    <SafeAreaView>
       {loading ? (
-        <SafeAreaView>
-          <Text>Loading....</Text>
-        </SafeAreaView>
+        <Text style={{alignSelf: 'center', marginTop: 200}}>Loading....</Text>
       ) : (
-        <SafeAreaView>
-          <ScrollView
-            refreshControl={
-              <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-            }>
-            <View style={styles.home}>
-              <Link style={styles.linkSearch} to={{screen: ROUTES.SEARCH}}>
-                <Icon style={styles.linkSearchIcon} name="ios-search"></Icon>
-              </Link>
-              <View style={{paddingBottom: windowHeight / 7}}>
-                {posts.map(post => (
-                  <PostFeed key={post.postId} post={post}></PostFeed>
-                ))}
-              </View>
-            </View>
-          </ScrollView>
-        </SafeAreaView>
+        <FlatList
+          data={posts}
+          renderItem={({item: post}) => (
+            <PostFeed key={post.postId} post={post} />
+          )}
+          keyExtractor={post => post.postId}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }
+        />
       )}
-    </View>
+    </SafeAreaView>
   );
 }
 const styles = StyleSheet.create({

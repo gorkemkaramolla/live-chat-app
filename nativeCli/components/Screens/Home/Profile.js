@@ -51,30 +51,27 @@ const Profile = ({navigation}) => {
     gender: '',
     profilePicture: null,
   });
+
   useEffect(() => {
     async function getUser() {
       const userId = await AsyncStorage.getItem('@current_user_id');
       setUserId(userId);
-      if (userId !== null || userId !== '' || userId !== undefined) {
+      if (userId) {
         getCurrentUser(userId, response => {
-          setUserInformations(prev => ({
-            ...prev,
+          setUserInformations({
             username: response.username,
             email: response.email,
             firstname: response.firstname,
             lastname: response.lastname,
             gender: response.gender,
             profilePicture: response.profilePicture,
-          }));
+          });
         });
       }
     }
     getUser();
-  }, [
-    userInformations.gender,
-    userInformations.firstname,
-    userInformations.lastname,
-  ]);
+  }, [userId]);
+
   const logout = async () => {
     const userId = await AsyncStorage.getItem('@current_user_id');
     removeFew = async () => {
