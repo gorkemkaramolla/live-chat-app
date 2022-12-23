@@ -11,7 +11,6 @@ import {Dimensions} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {getPageablePost} from '../../../requests/PostRequests';
 const windowHeight = Dimensions.get('window').height;
-const array = [1, 2, 3, 4, 5];
 export default function Home({navigation}) {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -23,13 +22,20 @@ export default function Home({navigation}) {
       setPosts(response);
       setLoading(false);
     });
-  }, [refreshing]);
+  }, []);
   const wait = timeout => {
     return new Promise(resolve => setTimeout(resolve, timeout));
   };
-  const onRefresh = useCallback(() => {
+  const onRefresh = useCallback(async () => {
     setRefreshing(true);
-    wait(2000).then(() => setRefreshing(false));
+    try {
+      const newPosts = await getPageablePost(0);
+      setPosts(newPosts);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setRefreshing(false);
+    }
   }, []);
   return (
     <View>

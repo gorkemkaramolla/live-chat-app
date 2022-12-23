@@ -6,7 +6,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {getAccessToken} from './RefreshToken';
 
 const getPageablePost = async (pageable, callback) => {
-  getAccessToken(async resx => {
+  await getAccessToken(async resx => {
     await axios
       .get(`${API_ROOT}posts/${pageable}`, {
         headers: {
@@ -22,8 +22,9 @@ const getPageablePost = async (pageable, callback) => {
       });
   });
 };
+
 const getUsersPost = async (userId, callback) => {
-  getAccessToken(async resx => {
+  await getAccessToken(async resx => {
     await axios
       .get(`${API_ROOT}posts?userId=${userId}`, {
         headers: {
@@ -39,7 +40,7 @@ const getUsersPost = async (userId, callback) => {
   });
 };
 const addPost = async (userId, file, content, callback) => {
-  getAccessToken(async resx => {
+  await getAccessToken(async resx => {
     await axios
       .post(
         `${API_ROOT}posts`,
