@@ -22,9 +22,13 @@ import {
   ScrollView,
   PermissionsAndroid,
 } from 'react-native';
-export default function Post() {
+export default function Post(props) {
+  const {modalVisible, setModalVisible} = props;
+
+  if (!modalVisible || !setModalVisible) {
+    return null;
+  }
   const RNFS = require('react-native-fs');
-  const [modalVisible, setModalVisible] = useState(false);
   const [selectedImage, setSelectedImage] = useState();
   const [content, setContent] = useState('');
   let options = {saveToPhotos: true, mediaType: 'photo', quality: 0.01};
@@ -36,7 +40,7 @@ export default function Post() {
         alert('Successfully Posted');
         setContent('');
         setSelectedImage(null);
-        setModalVisible(false);
+        setVisible(false);
       });
     } else {
       alert("Content can't be null");
@@ -78,7 +82,6 @@ export default function Post() {
         <Modal
           animationType="slide"
           transparent={true}
-          visible={modalVisible}
           onRequestClose={() => {
             setModalVisible(!modalVisible);
           }}>
@@ -139,11 +142,6 @@ export default function Post() {
             </ScrollView>
           </View>
         </Modal>
-        <Pressable
-          style={[styles.button, styles.buttonOpen]}
-          onPress={() => setModalVisible(true)}>
-          <Text style={styles.textStyle}>+</Text>
-        </Pressable>
       </View>
     </SafeAreaView>
   );

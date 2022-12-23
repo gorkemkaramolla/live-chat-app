@@ -20,10 +20,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service
@@ -59,6 +56,7 @@ public class PostService {
     }
 
     public Post addPost( AddPostRequest postRequest)  {
+
         Optional<User> user = userRepository.findById(postRequest.getUserId());
         if(user.isPresent())
         {
@@ -83,33 +81,31 @@ public class PostService {
     }
 
     public List<PostResponse> getUsersPost(String userId) {
+        Pageable pageable = PageRequest.of(0, 15, Sort.by("createdAt",userId).descending());
 
-        List<Post> posts = postRepository.findByUserId(userId);
-        if(posts!=null)
-        {
-            DateTimeFormatter format = DateTimeFormatter.ofPattern("dd MMMM, HH:mm");
-            List<PostResponse> postResponseList = new ArrayList<>();
-            posts.forEach(post -> {
-                Optional<User> user = userRepository.findById(post.getUserId());
+        Page<Post> posts = postRepository.findAll(pageable);
+        DateTimeFormatter format = DateTimeFormatter.ofPattern("dd MMMM, HH:mm");
+        List<PostResponse> postResponseList = new ArrayList<>();
+        posts.forEach(post -> {
+            Optional<User> user = userRepository.findById(post.getUserId());
 
-                if(user.isPresent())
-                {
-                    User existUser = user.get();
-                    postResponseList.add(new PostResponse(post.getId(),
-                            existUser.getUsername(),
-                            existUser.getId(),
-                            existUser.getUsername(),
-                            existUser.getLastname(),
-                            post.getContent(),
-                            post.getFile(),
-                            existUser.getProfilePicture().getFile(),
-                            post.getCreatedAt().format(format)));
-                }
-            });
-            log.error(String.valueOf(postResponseList));
-            return postResponseList;
-        }
-        return null;
+            if(user.isPresent())
+            {
+                User existUser = user.get();
+                postResponseList.add(new PostResponse(post.getId(),
+                        existUser.getUsername(),
+                        existUser.getId(),
+                        existUser.getUsername(),
+                        existUser.getLastname(),
+                        post.getContent(),
+                        post.getFile(),
+                        existUser.getProfilePicture().getFile(),
+                        post.getCreatedAt().format(format)));
+            }
+        });
+        log.error(String.valueOf(postResponseList));
+
+        return postResponseList;
 
     }
 

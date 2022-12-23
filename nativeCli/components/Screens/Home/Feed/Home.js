@@ -10,15 +10,17 @@ import {ScrollView} from 'react-native-gesture-handler';
 import {Dimensions} from 'react-native';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {getPageablePost} from '../../../requests/PostRequests';
+import Post from '../Post';
 const windowHeight = Dimensions.get('window').height;
 export default function Home({navigation}) {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
+  const [modalVisible, setModalVisible] = useState(false);
 
   useEffect(() => {
     getPageablePost(0, response => {
-      console.debug(response);
+      console.debug('Home useEffect');
       setPosts(response);
       setLoading(false);
     });
@@ -29,22 +31,39 @@ export default function Home({navigation}) {
   };
   const onRefresh = useCallback(async () => {
     setRefreshing(true);
-    setLoading(true);
     try {
       await getPageablePost(0, res => {
         setPosts(res);
-        setLoading(false);
+        setRefreshing(false);
       });
     } catch (error) {
       console.error(error);
-    } finally {
-      setRefreshing(false);
     }
   }, []);
+
   return (
     <SafeAreaView>
+      {modalVisible && (
+        <Post modalVisible={modalVisible} setModalVisible={setModalVisible} />
+      )}
+      <View
+        style={{
+          alignItems: 'center',
+          flexDirection: 'row',
+          display: 'flex',
+          justifyContent: 'flex-end',
+        }}>
+        <Pressable
+          onPress={() => {
+            setModalVisible(true);
+          }}>
+          <Icon style={{fontSize: 36}} name="add"></Icon>
+        </Pressable>
+        <Icon style={{fontSize: 36}} name="search"></Icon>
+      </View>
+
       {loading ? (
-        <Text style={{alignSelf: 'center', marginTop: 200}}>Loading....</Text>
+        <Text style={{alignSelf: 'center'}}>Loading....</Text>
       ) : (
         <FlatList
           data={posts}

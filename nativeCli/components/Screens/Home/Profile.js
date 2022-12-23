@@ -8,16 +8,20 @@ import {
   TextInput,
   StatusBar,
   SectionList,
+  FlatList,
+  RefreshControl,
   StyleSheet,
   Dimensions,
   Image,
 } from 'react-native';
 import SelectDropdown from 'react-native-select-dropdown';
-import React, {useEffect, useState} from 'react';
+
+import React, {useEffect, useState, useCallback} from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {getCurrentUser, updateUser} from '../../requests/UserRequest';
 import {ROUTES} from '../../constants';
-
+import {getUsersPost} from '../../requests/PostRequests';
+import PostFeed from './Posts/PostFeed';
 const DATA = [
   {
     data: ['Posts', 'Reels', 'Liked'],
@@ -37,6 +41,10 @@ const PostItem = ({style, src}) => (
 );
 
 const Profile = ({navigation}) => {
+  const [loading, setLoading] = useState(true);
+
+  const [refreshing, setRefreshing] = useState(false);
+  const [posts, setPosts] = useState([]);
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
   const [gender, setGender] = useState('');
@@ -51,7 +59,30 @@ const Profile = ({navigation}) => {
     gender: '',
     profilePicture: null,
   });
-
+  const onRefresh = useCallback(async () => {
+    setRefreshing(true);
+    try {
+      await getUsersPost(
+        await AsyncStorage.getItem('@current_user_id'),
+        res => {
+          setPosts(res);
+          setRefreshing(false);
+        },
+      );
+    } catch (error) {
+      console.error(error);
+    }
+  }, []);
+  useEffect(() => {
+    const getUsersPostsAsync = async () => {
+      getUsersPost(await AsyncStorage.getItem('@current_user_id'), response => {
+        console.debug('profile useEffect');
+        setPosts(response);
+        setLoading(false);
+      });
+    };
+    getUsersPostsAsync();
+  }, []);
   useEffect(() => {
     async function getUser() {
       const userId = await AsyncStorage.getItem('@current_user_id');
@@ -70,7 +101,7 @@ const Profile = ({navigation}) => {
       }
     }
     getUser();
-  }, [userId]);
+  }, []);
 
   const logout = async () => {
     const userId = await AsyncStorage.getItem('@current_user_id');
@@ -203,9 +234,8 @@ const Profile = ({navigation}) => {
           flexDirection: 'row',
           justifyContent: 'center',
           alignItems: 'center',
-          padding: 20,
         }}>
-        <View style={{padding: 20}}>
+        <View>
           <Text style={{fontSize: 24, paddingVertical: 10}}>
             {userInformations.username}
           </Text>
@@ -214,9 +244,7 @@ const Profile = ({navigation}) => {
               {userInformations.firstname + ' ' + userInformations.lastname}
             </Text>
           </View>
-          <Pressable
-            style={{width: 100, height: 30}}
-            onPress={() => alert('helllo')}>
+          <Pressable style={{width: 100, height: 30}}>
             <Text>Hello</Text>
           </Pressable>
         </View>
@@ -229,55 +257,22 @@ const Profile = ({navigation}) => {
           }}
         />
       </View>
-      <View>
-        <SectionList
-          contentContainerStyle={{
-            justifyContent: 'space-between',
-            flex: 1,
-          }}
-          style={{}}
-          sections={DATA}
-          horizontal={true}
-          keyExtractor={(item, index) => item + index}
-          renderItem={({item}) => (
-            <Pressable style={styles.item}>
-              <Text style={styles.title}>{item}</Text>
-            </Pressable>
-          )}
-        />
-        <View style={{height: 20}}></View>
-        <SectionList
-          contentContainerStyle={{
-            paddingBottom: height / 2,
-          }}
-          sections={DATA}
-          keyExtractor={(item, index) => item + index}
-          renderItem={({index}) => {
-            if (index === DATA[0].data.length - 1) {
-              return (
-                <PostItem
-                  style={{marginBottom: height / 10}}
-                  src={{
-                    uri:
-                      'data:image/png;base64,' +
-                      userInformations.profilePicture?.file?.data,
-                  }}
-                />
-              );
-            } else {
-              return (
-                <PostItem
-                  src={{
-                    uri:
-                      'data:image/png;base64,' +
-                      userInformations.profilePicture?.file?.data,
-                  }}
-                />
-              );
+      <SafeAreaView style={{paddingBottom: 150}}>
+        {loading ? (
+          <Text>Loading...</Text>
+        ) : (
+          <FlatList
+            data={posts}
+            renderItem={({item: post}) => (
+              <PostFeed key={post.postId} post={post} />
+            )}
+            keyExtractor={post => post.postId}
+            refreshControl={
+              <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
             }
-          }}
-        />
-      </View>
+          />
+        )}
+      </SafeAreaView>
     </SafeAreaView>
   );
 };

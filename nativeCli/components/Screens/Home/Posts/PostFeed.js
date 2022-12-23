@@ -92,8 +92,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     alignContent: 'center',
     minWidth: '100%',
+    marginTop: 5,
     padding: 5,
-    margin: 5,
   },
   container: {
     borderBottomWidth: 2,

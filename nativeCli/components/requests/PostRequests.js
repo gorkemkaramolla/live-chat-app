@@ -14,7 +14,6 @@ const getPageablePost = async (pageable, callback) => {
         },
       })
       .then(response => {
-        console.debug('response' + response.data);
         callback(response.data);
       })
       .catch(err => {
