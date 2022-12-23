@@ -7,8 +7,7 @@ const setAccessToken = async value => {
   } catch (e) {}
 };
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {get} from 'react-native/Libraries/Utilities/PixelRatio';
-const getRefreshToken = async (access_token, callback) => {
+const getRefreshToken = async callback => {
   await axios
     .get(`${API_ROOT}users/refresh`, {
       headers: {
@@ -18,31 +17,27 @@ const getRefreshToken = async (access_token, callback) => {
     .then(response => {
       callback(response.data);
     })
-    .catch(e => {
-      console.debug('getCurrentUser error ' + e);
-    });
+    .catch(e => {});
 };
 const getAccessToken = async callback => {
   try {
-    await AsyncStorage.getItem('@access_token')
-      .then(token => {
-        let base64Url = token.split('.')[1]; // token you get
-        let base64 = base64Url.replace('-', '+').replace('_', '/');
-        let decodedData = JSON.parse(
-          Buffer.from(base64, 'base64').toString('binary'),
-        );
-        var date = new Date();
+    const token = await AsyncStorage.getItem('@access_token');
 
-        if (decodedData.exp * 1000 >= date.valueOf()) {
-          console.debug('old access Token');
-          return callback(token);
-        } else {
-          getRefreshToken(token, response => {
-            return callback(response.access_token);
-          });
-        }
-      })
-      .catch(err => console.debug('catch error ' + err));
+    let base64Url = token.split('.')[1]; // token you get
+    let base64 = base64Url.replace('-', '+').replace('_', '/');
+    let decodedData = JSON.parse(
+      Buffer.from(base64, 'base64').toString('binary'),
+    );
+    var date = new Date();
+
+    if (decodedData.exp * 1000 >= date.valueOf()) {
+      console.debug('old access Token');
+      callback(token);
+    } else {
+      getRefreshToken(response => {
+        callback(response.access_token);
+      });
+    }
   } catch (err) {
     console.debug('getAccessToken' + err);
   }
