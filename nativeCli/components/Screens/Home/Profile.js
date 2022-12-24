@@ -129,7 +129,9 @@ const Profile = ({navigation}) => {
   };
   return (
     <SafeAreaView style={styles.container}>
-      <Pressable onPress={() => setModalVisible(true)}>
+      <Pressable
+        style={{alignSelf: 'flex-end', marginRight: 10}}
+        onPress={() => setModalVisible(true)}>
         <Image
           source={{
             uri: 'https://cdn-icons-png.flaticon.com/512/2099/2099058.png',
@@ -236,26 +238,31 @@ const Profile = ({navigation}) => {
           alignItems: 'center',
         }}>
         <View>
-          <Text style={{fontSize: 24, paddingVertical: 10}}>
+          <Image
+            style={{width: 100, height: 100, alignSelf: 'center'}}
+            source={{
+              uri:
+                'data:image/png;base64,' +
+                userInformations.profilePicture?.file?.data,
+            }}
+          />
+          <Text
+            style={{fontSize: 24, paddingVertical: 10, alignSelf: 'center'}}>
             {userInformations.username}
           </Text>
+          <View style={{width: '90%', alignSelf: 'center'}}>
+            <Text style={{}}>
+              Lorem ipsum dolor sit amet consectetur adipisicing elit. Totam
+              nesciunt labore consequatur quos ad placeat exercitationem nemo
+              sequi ita
+            </Text>
+          </View>
           <View style={{fontSize: 20, paddingBottom: 10}}>
             <Text>
               {userInformations.firstname + ' ' + userInformations.lastname}
             </Text>
           </View>
-          <Pressable style={{width: 100, height: 30}}>
-            <Text>Hello</Text>
-          </Pressable>
         </View>
-        <Image
-          style={{width: 100, height: 100}}
-          source={{
-            uri:
-              'data:image/png;base64,' +
-              userInformations.profilePicture?.file?.data,
-          }}
-        />
       </View>
       <SafeAreaView style={{paddingBottom: 150}}>
         {loading ? (

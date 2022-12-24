@@ -57,9 +57,9 @@ export default function Home({navigation}) {
           onPress={() => {
             setModalVisible(true);
           }}>
-          <Icon style={{fontSize: 36}} name="add"></Icon>
+          <Icon style={{fontSize: 30}} name="add"></Icon>
         </Pressable>
-        <Icon style={{fontSize: 36}} name="search"></Icon>
+        <Icon style={{fontSize: 24}} name="search"></Icon>
       </View>
 
       {loading ? (

@@ -2,18 +2,20 @@ import {
   View,
   Modal,
   Text,
+  Image,
   Platform,
   ImageBackGround,
   Dimensions,
   ImageBackground,
 } from 'react-native';
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {launchCamera} from 'react-native-image-picker';
 import {launchImageLibrary} from 'react-native-image-picker';
 import {addPost} from '../../requests/PostRequests';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-
+import gallery from '../../../assets/images/gallery.png';
+import camera from '../../../assets/images/camera.png';
 import {
   SafeAreaView,
   Pressable,
@@ -23,6 +25,7 @@ import {
   PermissionsAndroid,
 } from 'react-native';
 export default function Post(props) {
+  useEffect(() => {}, []);
   const {modalVisible, setModalVisible} = props;
 
   if (!modalVisible || !setModalVisible) {
@@ -97,48 +100,44 @@ export default function Post(props) {
 
               <View style={styles.camIcons}>
                 <Pressable onPress={openCamera}>
-                  <Icon
-                    style={{
-                      fontSize: 48,
-                    }}
-                    name={'add-a-photo'}></Icon>
+                  <Image
+                    style={{width: 48, height: 48}}
+                    source={camera}></Image>
                 </Pressable>
                 <Pressable onPress={openGallery}>
-                  <Icon
-                    style={{
-                      fontSize: 48,
-                    }}
-                    name={'add-photo-alternate'}></Icon>
+                  <Image
+                    style={{width: 48, height: 48}}
+                    source={gallery}></Image>
                 </Pressable>
               </View>
               {selectedImage && (
-                <ImageBackground
-                  style={styles.preview}
-                  source={{
-                    uri: 'data:image/png;base64,' + selectedImage,
-                  }}>
+                <View style={{top: 10}}>
                   <Pressable
                     onPress={() => {
                       setSelectedImage(null);
                     }}>
-                    <Icon
-                      style={{
-                        fontSize: 48,
-                      }}
-                      name={'close'}></Icon>
+                    <Icon style={{fontSize: 24}} name={'close'}></Icon>
                   </Pressable>
-                </ImageBackground>
+                </View>
               )}
+              {selectedImage && (
+                <View style={{position: 'relative'}}>
+                  <Image
+                    style={styles.preview}
+                    source={{
+                      uri: 'data:image/png;base64,' + selectedImage,
+                    }}></Image>
+                </View>
+              )}
+
               <TextInput
                 placeholder="What do you think?"
                 multiline={true}
+                maxLength={300}
                 style={styles.contentInput}
                 onChangeText={text => {
                   setContent(text);
                 }}></TextInput>
-              <Pressable style={styles.postButton} onPress={sendThePost}>
-                <Text>Post oluştur</Text>
-              </Pressable>
             </ScrollView>
           </View>
         </Modal>
@@ -153,13 +152,47 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    margin: 20,
     marginTop: 22,
   },
 
   button: {
+    backgroundColor: '#00b8d4',
+    margin: 8,
+    width: '95%',
+    alignSelf: 'center',
+    borderRadius: 8,
+    paddingVertical: 12,
+    paddingHorizontal: 24,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+  },
+  buttonText: {
+    color: '#fff',
+    fontSize: 18,
+    fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  preview: {
     borderRadius: 20,
-    padding: 10,
-    elevation: 2,
+    margin: 8,
+    aspectRatio: 1 * 1,
+    alignSelf: 'center',
+    width: '95%',
+    minHeight: 300,
+    resizeMode: 'cover',
+    shadowColor: '#000',
+    shadowOffset: {width: 0, height: 2},
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
+    overflow: 'hidden',
   },
   buttonOpen: {
     height: 50,
@@ -167,6 +200,20 @@ const styles = StyleSheet.create({
     backgroundColor: '#F194FF',
     color: 'red',
   },
+  iconContainer: {
+    position: 'absolute',
+    right: 0,
+    top: 0,
+    padding: 8,
+  },
+  icon: {
+    fontSize: 24,
+    color: 'white',
+    backgroundColor: 'black;',
+    position: 'absolute',
+    zIndex: 1,
+  },
+
   buttonClose: {
     borderRadius: 0,
     margin: '3%',
@@ -197,31 +244,48 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   camIcons: {
-    maxHeight: '50%',
-    width: '100%',
-    flex: 1,
+    width: '90%',
+    height: 40,
     flexDirection: 'row',
-    justifyContent: 'flex-start',
-    alignItems: 'flex-start',
+    alignItems: 'center',
+    justifyContent: 'space-around',
+    backgroundColor: '#eee',
+    borderRadius: 10,
+    margin: 16,
+    padding: 16,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5,
   },
-  contentInput: {
-    marginTop: 10,
-    borderColor: 'lightblue',
-    color: 'red',
-    borderWidth: 1,
 
-    width: '100%',
-  },
-  preview: {
+  contentInput: {
     textAlign: 'center',
+    borderWidth: 1,
+    width: '95%',
+
     alignSelf: 'center',
-    fontSize: 24,
-    backgroundColor: 'white',
-    aspectRatio: 1 * 1,
-    width: '100%',
-    minHeight: 300,
-    resizeMode: 'cover',
+    borderColor: '#222',
+    borderRadius: 8,
+    paddingTop: 20,
+    paddingBottom: 20,
+    fontSize: 16,
+    color: '#333',
+    backgroundColor: '#fff',
+    shadowColor: '#000',
+    shadowOpacity: 0.2,
+    shadowRadius: 10,
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    elevation: 4,
   },
+
   postButton: {
     alignSelf: 'flex-end',
     borderWidth: 1,
