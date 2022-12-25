@@ -2,6 +2,7 @@ package com.example.livemobileapp.controller;
 import com.example.livemobileapp.model.Post;
 import com.example.livemobileapp.service.PostService;
 import com.example.livemobileapp.web.requests.request.AddPostRequest;
+import com.example.livemobileapp.web.requests.response.AddingPostResponse;
 import com.example.livemobileapp.web.requests.response.PostResponse;
 import com.mongodb.lang.Nullable;
 import lombok.AllArgsConstructor;
@@ -23,10 +24,13 @@ import java.util.List;
 public class PostController {
     private final PostService postService;
     @PostMapping(consumes = {MediaType.MULTIPART_FORM_DATA_VALUE,MediaType.APPLICATION_JSON_VALUE})
-    public ResponseEntity<Post> addPost(@Nullable @RequestBody() AddPostRequest postRequest){
+    public ResponseEntity<AddingPostResponse> addPost(@RequestBody() AddPostRequest postRequest){
+        Post post = postService.addPost(postRequest);
+        if (post != null) {
+            return new ResponseEntity<>(new AddingPostResponse(post), HttpStatus.CREATED);
+        }
+        return new ResponseEntity<>(new AddingPostResponse("An error occurred while adding the post"), HttpStatus.INTERNAL_SERVER_ERROR);
 
-        assert postRequest != null;
-        return new ResponseEntity<>( postService.addPost(postRequest), HttpStatus.CREATED);
     }
     @GetMapping("/{page}")
     public ResponseEntity getPageablePost(@PathVariable Integer page)

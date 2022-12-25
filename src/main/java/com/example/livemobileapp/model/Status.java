@@ -1,2 +1,7 @@
-package com.example.livemobileapp.model;public enum Status {
+package com.example.livemobileapp.model;
+
+public enum Status {
+    JOIN,
+    MESSAGE,
+    LEAVE
 }

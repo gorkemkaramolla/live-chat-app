@@ -8,6 +8,7 @@ public class LiveMobileAppApplication {
 
     public static void main(String[] args) {
         SpringApplication.run(LiveMobileAppApplication.class, args);
+
     }
 
 }

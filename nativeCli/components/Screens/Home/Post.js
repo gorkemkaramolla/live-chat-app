@@ -34,16 +34,15 @@ export default function Post(props) {
   const RNFS = require('react-native-fs');
   const [selectedImage, setSelectedImage] = useState();
   const [content, setContent] = useState('');
-  let options = {saveToPhotos: true, mediaType: 'photo', quality: 0.01};
+  let options = {saveToPhotos: true, mediaType: 'photo', quality: 1};
   const sendThePost = async () => {
     const userId = await AsyncStorage.getItem('@current_user_id');
-    if (content !== '' && userId !== null) {
+    if (content !== '' || userId !== null) {
       addPost(userId, selectedImage, content, res => {
         console.debug(res);
-        alert('Successfully Posted');
         setContent('');
         setSelectedImage(null);
-        setVisible(false);
+        setModalVisible(false);
       });
     } else {
       alert("Content can't be null");
@@ -138,6 +137,9 @@ export default function Post(props) {
                 onChangeText={text => {
                   setContent(text);
                 }}></TextInput>
+              <Pressable onPress={sendThePost} style={styles.button}>
+                <Text style={styles.buttonText}>Send</Text>
+              </Pressable>
             </ScrollView>
           </View>
         </Modal>

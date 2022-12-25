@@ -259,7 +259,7 @@ const Profile = ({navigation}) => {
           </View>
           <View style={{fontSize: 20, paddingBottom: 10}}>
             <Text>
-              {userInformations.firstname + ' ' + userInformations.lastname}
+              {userInformations?.firstname + ' ' + userInformations?.lastname}
             </Text>
           </View>
         </View>

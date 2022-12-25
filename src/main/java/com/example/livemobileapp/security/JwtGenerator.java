@@ -11,7 +11,7 @@ import java.util.Date;
 public class JwtGenerator {
     public static String generateToken(UserDetailsImpl user, String url, Date issuedAt, Date expiration)
     {
-        String token = Jwts.builder()
+        return Jwts.builder()
                 .setSubject(user.getUsername())
                 .setIssuedAt(issuedAt)
                 .setExpiration(expiration)
@@ -19,11 +19,10 @@ public class JwtGenerator {
                 .claim("roles",user.getAuthorities())
                 .signWith(SignatureAlgorithm.HS512,"secret")
                 .compact();
-        return token;
     }
     public static String generateToken(User user, String url, Date issuedAt, Date expiration)
     {
-        String token = Jwts.builder()
+        return Jwts.builder()
                 .setSubject(user.getUsername())
                 .setIssuedAt(issuedAt)
                 .setExpiration(expiration)
@@ -31,7 +30,6 @@ public class JwtGenerator {
                 .claim("roles",new ArrayList<>())
                 .signWith(SignatureAlgorithm.HS512,"secret")
                 .compact();
-        return token;
     }
     public static boolean validateToken(String token) throws IOException {
         try {

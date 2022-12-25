@@ -1,8 +1,6 @@
 package com.example.livemobileapp.web.requests.response;
 
 import lombok.Data;
-
-import java.time.LocalDateTime;
 @Data
 public class AddCommentResponse {
     private String commentText;

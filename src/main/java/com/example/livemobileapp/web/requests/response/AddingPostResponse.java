@@ -4,16 +4,16 @@ import com.example.livemobileapp.model.Post;
 import lombok.Data;
 
 @Data
-public class AddingPostRespose {
+public class AddingPostResponse {
     private final Post post;
     private final String errorMessage;
 
-    public AddingPostRespose(Post post) {
+    public AddingPostResponse(Post post) {
         this.post = post;
         this.errorMessage = null;
     }
 
-    public AddingPostRespose(String errorMessage) {
+    public AddingPostResponse(String errorMessage) {
         this.post = null;
         this.errorMessage = errorMessage;
     }

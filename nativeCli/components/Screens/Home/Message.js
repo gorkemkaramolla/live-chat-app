@@ -8,6 +8,7 @@ import {
   Dimensions,
   TouchableOpacity,
 } from 'react-native';
+import ChatWebSocket from '../ChatWebSocket';
 
 const Message = () => {
   const [messages, setMessages] = useState([]);
@@ -19,33 +20,34 @@ const Message = () => {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.messagesContainer}>
-        {messages.map((message, index) => (
-          <View
-            key={index}
-            style={[
-              styles.messageBubble,
-              message.isOutgoing
-                ? styles.outgoingBubble
-                : styles.incomingBubble,
-            ]}>
-            <Text style={styles.messageText}>{message.text}</Text>
-          </View>
-        ))}
-      </View>
-      <View style={styles.inputContainer}>
-        <TextInput
-          style={styles.input}
-          value={input}
-          onChangeText={setInput}
-          placeholder="Type a message..."
-        />
-        <TouchableOpacity style={styles.sendButton} onPress={sendMessage}>
-          <Text style={styles.sendButtonText}>Send</Text>
-        </TouchableOpacity>
-      </View>
-    </SafeAreaView>
+    // <SafeAreaView style={styles.container}>
+    //   <View style={styles.messagesContainer}>
+    //     {messages.map((message, index) => (
+    //       <View
+    //         key={index}
+    //         style={[
+    //           styles.messageBubble,
+    //           message.isOutgoing
+    //             ? styles.outgoingBubble
+    //             : styles.incomingBubble,
+    //         ]}>
+    //         <Text style={styles.messageText}>{message.text}</Text>
+    //       </View>
+    //     ))}
+    //   </View>
+    //   <View style={styles.inputContainer}>
+    //     <TextInput
+    //       style={styles.input}
+    //       value={input}
+    //       onChangeText={setInput}
+    //       placeholder="Type a message..."
+    //     />
+    //     <TouchableOpacity style={styles.sendButton} onPress={sendMessage}>
+    //       <Text style={styles.sendButtonText}>Send</Text>
+    //     </TouchableOpacity>
+    //   </View>
+    // </SafeAreaView>
+    <ChatWebSocket></ChatWebSocket>
   );
 };
 
