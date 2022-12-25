@@ -1,16 +1,20 @@
 /* eslint-disable react-native/no-inline-styles */
 /* eslint-disable react/self-closing-comp */
-import React from 'react';
+import {React, useEffect, useState} from 'react';
 import Icon from 'react-native-vector-icons/Ionicons';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
-import {StyleSheet} from 'react-native';
+import {StyleSheet, View, Dimensions} from 'react-native';
 import Profile from '../Screens/Home/Profile';
 import Settings from '../Screens/Home/Settings';
 import Post from '../Screens/Home/Post';
 import {ROUTES} from '../constants';
 import Message from '../Screens/Home/Message';
 import Home from '../Screens/Home/Feed/Home';
+import {SafeAreaView} from 'react-native-safe-area-context';
 const BottomTabs = createMaterialTopTabNavigator();
+const windowWidth = Dimensions.get('window').width;
+const windowHeight = Dimensions.get('window').height;
+import {Animated} from 'react-native';
 
 const BottomNavigator = () => {
   return (

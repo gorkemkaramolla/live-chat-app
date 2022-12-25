@@ -1,6 +1,9 @@
 import React, {useEffect, useState} from 'react';
 import {over} from 'stompjs';
+import KeyboardListener from 'react-native-keyboard-listener';
+
 import SockJS from 'sockjs-client';
+import {Dimensions, Keyboard} from 'react-native';
 import {
   View,
   Text,
@@ -12,18 +15,41 @@ import {
   StyleSheet,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-
+import {SafeAreaView} from 'react-native-safe-area-context';
+const windowWidth = Dimensions.get('window').width;
+const windowHeight = Dimensions.get('window').height;
 var stompClient = null;
 const ChatWebSocket = () => {
   const [privateChats, setPrivateChats] = useState(new Map());
   const [publicChats, setPublicChats] = useState([]);
   const [tab, setTab] = useState('CHATROOM');
+  const [keyboardOpen, setKeyboardOpen] = useState(false);
+  const [keyboardHeight, setKeyboardHeight] = useState(0);
   const [userData, setUserData] = useState({
     userId: '',
     receiverId: '',
     connected: false,
     message: '',
   });
+
+  useEffect(() => {
+    console.debug();
+
+    const showSubscription = Keyboard.addListener('keyboardDidShow', e => {
+      setKeyboardHeight(e.endCoordinates.height);
+      setKeyboardOpen(true);
+      console.debug('keyboard height' + keyboardHeight);
+    });
+
+    const hideSubscription = Keyboard.addListener('keyboardDidHide', () => {
+      setKeyboardOpen(false);
+    });
+
+    return () => {
+      showSubscription.remove();
+      hideSubscription.remove();
+    };
+  }, [keyboardHeight]);
   useEffect(() => {
     console.debug('*********************************publicChat' + publicChats);
     console.debug('*********************************userId' + userData.userId);
@@ -138,8 +164,19 @@ const ChatWebSocket = () => {
   };
 
   return (
-    <View>
+    <SafeAreaView style={{minHeight: windowHeight, backgroundColor: 'red'}}>
       {
+        <View>
+          <KeyboardListener
+            onWillShow={() => {
+              setKeyboardOpen(true);
+              console.debug(keyboardOpen);
+            }}
+            onWillHide={() => {
+              setKeyboardOpen(false);
+            }}
+          />
+        </View>
         // <SafeAreaView style={styles.container}>
         //   <View style={styles.messagesContainer}>
         //     {messages.map((message, index) => (
@@ -200,7 +237,13 @@ const ChatWebSocket = () => {
               )}
               keyExtractor={item => item.id}
             />
-            <View style={styles.inputContainer}>
+            <View
+              style={{
+                ...styles.inputContainer,
+                top: keyboardOpen
+                  ? windowHeight - (keyboardHeight + 120)
+                  : windowHeight - 120,
+              }}>
               <TextInput
                 value={userData.message}
                 style={styles.input}
@@ -215,9 +258,45 @@ const ChatWebSocket = () => {
             </View>
             <View></View>
           </View>
-        ) : null}
+        ) : (
+          <View>
+            <FlatList
+              data={[...privateChats.get(tab)]}
+              renderItem={({item}) => (
+                <View key={item.id}>
+                  {item.senderName !== userData.userId && (
+                    <View>
+                      <Text>{item.senderName}</Text>
+                    </View>
+                  )}
+                  <View>
+                    <Text>{item.message}</Text>
+                  </View>
+                  {item.senderName === userData.userId && (
+                    <View>
+                      <Text>{item.senderName}</Text>
+                    </View>
+                  )}
+                </View>
+              )}
+              keyExtractor={item => item}
+            />
+            <View>
+              <TextInput
+                placeholder="enter the message"
+                value={userData.message}
+                onChangeText={value => {
+                  setUserData({...userData, message: value});
+                }}
+              />
+              <Pressable onPress={sendPrivateValue}>
+                <Text>send</Text>
+              </Pressable>
+            </View>
+          </View>
+        )}
       </View>
-    </View>
+    </SafeAreaView>
   );
 };
 const styles = StyleSheet.create({
@@ -252,7 +331,6 @@ const styles = StyleSheet.create({
   },
   inputContainer: {
     position: 'absolute',
-    top: 600,
     flexDirection: 'row',
     alignItems: 'center',
     padding: 10,
