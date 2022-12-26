@@ -1,11 +1,13 @@
 import * as React from 'react';
-import {StyleSheet} from 'react-native';
+import {StyleSheet, View} from 'react-native';
 import {SafeAreaView} from 'react-native';
 import {NavigationContainer} from '@react-navigation/native';
 import AuthNavigator from './components/Navigators/AuthNavigator';
 import {useEffect, useState} from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {getAccessToken} from './components/requests/RefreshToken';
+import {SafeAreaProvider} from 'react-native-safe-area-context';
+
 export default function App() {
   // useEffect(() => {
   //   removeFew = async () => {

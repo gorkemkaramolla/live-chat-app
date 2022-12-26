@@ -15,34 +15,36 @@ const AuthNavigator = () => {
   const [loading, setLoading] = useState(false);
   async function loadName() {
     try {
-      await AsyncStorage.getItem('@current_user_id')
-        .then(res => {})
-        .finally(res => {
-          setUserId(res);
-        });
+      const res = await AsyncStorage.getItem('@current_user_id');
+      setUserId(res);
     } catch (e) {
       console.error('Failed to load name.');
     }
   }
-  useEffect(() => {
+  async function main() {
     setLoading(true);
 
-    loadName();
+    await loadName();
     setLoading(true);
+  }
+
+  useEffect(() => {
+    main();
   }, []);
+  const params = {backgroundColor: '#F0F8FF'};
   return (
     <Stack.Navigator
       initialRouteName={userId === null ? ROUTES.LOGIN : ROUTES.DRAWER}
       screenOptions={{
-        headerStyle: {
-          backgroundColor: 'red',
-        },
-
         headerShown: false,
+        statusBar: 'light',
         headerTintColor: 'black',
         headerBackTitleVisible: false,
+        headerStyle: {backgroundColor: 'red'},
+        cardStyle: {backgroundColor: 'red'},
       }}>
       <Stack.Screen
+        initialParams={params}
         name={ROUTES.DRAWER}
         component={DrawerNavigator}
         options={{
@@ -54,6 +56,7 @@ const AuthNavigator = () => {
       <Stack.Screen name={ROUTES.REGISTER} component={Register} options={{}} />
 
       <Stack.Screen
+        initialParams={params}
         name={ROUTES.MAKECOMMENT}
         component={CommentToPost}></Stack.Screen>
     </Stack.Navigator>

@@ -7,15 +7,7 @@ import CommentToPost from '../Screens/Home/Posts/Comments/CommentToPost';
 const Stack = createNativeStackNavigator();
 const AuthNavigator = () => {
   return (
-    <Stack.Navigator
-      initialRouteName={ROUTES.Login}
-      screenOptions={{
-        headerStyle: {
-          backgroundColor: '#9B59B6',
-        },
-        headerTintColor: 'white',
-        headerBackTitleVisible: false,
-      }}>
+    <Stack.Navigator initialRouteName={ROUTES.Login} screenOptions={{}}>
       <Stack.Screen
         name={ROUTES.SEARCH}
         component={SearchAndFind}></Stack.Screen>

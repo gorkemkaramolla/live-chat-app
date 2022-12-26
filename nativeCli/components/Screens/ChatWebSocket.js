@@ -1,9 +1,9 @@
 import React, {useEffect, useState} from 'react';
 import {over} from 'stompjs';
 import KeyboardListener from 'react-native-keyboard-listener';
-
+import Icon from 'react-native-vector-icons/Ionicons';
 import SockJS from 'sockjs-client';
-import {Dimensions, Keyboard} from 'react-native';
+import {Dimensions, Keyboard, TouchableWithoutFeedback} from 'react-native';
 import {
   View,
   Text,
@@ -16,40 +16,37 @@ import {
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {SafeAreaView} from 'react-native-safe-area-context';
+import {KeyboardAvoidingView} from 'react-native';
+
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 var stompClient = null;
+
 const ChatWebSocket = () => {
   const [privateChats, setPrivateChats] = useState(new Map());
   const [publicChats, setPublicChats] = useState([]);
   const [tab, setTab] = useState('CHATROOM');
   const [keyboardOpen, setKeyboardOpen] = useState(false);
   const [keyboardHeight, setKeyboardHeight] = useState(0);
+  const [disabled, setDisabled] = useState(false);
   const [userData, setUserData] = useState({
     userId: '',
     receiverId: '',
     connected: false,
     message: '',
   });
+  const handleKeyboardShow = event => {
+    setKeyboardOpen(true);
+    setKeyboardHeight(event.endCoordinates.height);
+  };
 
-  useEffect(() => {
-    console.debug();
+  const handleKeyboardHide = () => {
+    setKeyboardOpen(false);
+  };
 
-    const showSubscription = Keyboard.addListener('keyboardDidShow', e => {
-      setKeyboardHeight(e.endCoordinates.height);
-      setKeyboardOpen(true);
-      console.debug('keyboard height' + keyboardHeight);
-    });
+  Keyboard.addListener('keyboardDidShow', handleKeyboardShow);
+  Keyboard.addListener('keyboardDidHide', handleKeyboardHide);
 
-    const hideSubscription = Keyboard.addListener('keyboardDidHide', () => {
-      setKeyboardOpen(false);
-    });
-
-    return () => {
-      showSubscription.remove();
-      hideSubscription.remove();
-    };
-  }, [keyboardHeight]);
   useEffect(() => {
     console.debug('*********************************publicChat' + publicChats);
     console.debug('*********************************userId' + userData.userId);
@@ -104,6 +101,7 @@ const ChatWebSocket = () => {
         }
         break;
       case 'MESSAGE':
+        console.debug('OnMessageRecieved payload' + JSON.parse(payload.body));
         publicChats.push(payloadData);
         setPublicChats([...publicChats]);
         break;
@@ -128,6 +126,7 @@ const ChatWebSocket = () => {
   };
 
   const sendValue = () => {
+    setDisabled(true);
     if (stompClient) {
       console.debug(userData.userId + 'ALDSŞALSDŞALŞDLASŞDLASDİŞASLDAİ');
       var chatMessage = {
@@ -135,9 +134,14 @@ const ChatWebSocket = () => {
         message: userData.message,
         status: 'MESSAGE',
       };
-
-      stompClient.send('/app/message', {}, JSON.stringify(chatMessage));
-      setUserData({...userData, message: ''});
+      if (chatMessage.message !== '') {
+        stompClient.send('/app/message', {}, JSON.stringify(chatMessage));
+        setUserData({...userData, message: ''});
+        setDisabled(false);
+      } else {
+        alert('Cant send empty');
+        setDisabled(false);
+      }
     }
   };
 
@@ -164,198 +168,103 @@ const ChatWebSocket = () => {
   };
 
   return (
-    <SafeAreaView style={{minHeight: windowHeight, backgroundColor: 'red'}}>
-      {
-        <View>
-          <KeyboardListener
-            onWillShow={() => {
-              setKeyboardOpen(true);
-              console.debug(keyboardOpen);
-            }}
-            onWillHide={() => {
-              setKeyboardOpen(false);
-            }}
-          />
-        </View>
-        // <SafeAreaView style={styles.container}>
-        //   <View style={styles.messagesContainer}>
-        //     {messages.map((message, index) => (
-        //       <View
-        //         key={index}
-        //         style={[
-        //           styles.messageBubble,
-        //           message.isOutgoing
-        //             ? styles.outgoingBubble
-        //             : styles.incomingBubble,
-        //         ]}>
-        //         <Text style={styles.messageText}>{message.text}</Text>
-        //       </View>
-        //     ))}
-        //   </View>
-        //   <View style={styles.inputContainer}>
-        //     <TextInput
-        //       style={styles.input}
-        //       value={input}
-        //       onChangeText={setInput}
-        //       placeholder="Type a message..."
-        //     />
-        //     <TouchableOpacity style={styles.sendButton} onPress={sendMessage}>
-        //       <Text style={styles.sendButtonText}>Send</Text>
-        //     </TouchableOpacity>
-        //   </View>
-        // </SafeAreaView>
-      }
-      <View>
-        <View></View>
-        {tab === 'CHATROOM' ? (
-          <View>
-            <FlatList
-              data={publicChats}
-              renderItem={({item: item}) => (
-                <View
-                  key={item.id}
-                  style={[
-                    styles.messageBubble,
-                    item.senderName === userData.userId
-                      ? styles.incomingBubble
-                      : styles.outgoingBubble,
-                  ]}>
-                  {item.senderName !== userData.userId && (
-                    <View>
-                      <Text>{item.senderName}</Text>
-                    </View>
-                  )}
-                  <View>
-                    <Text style={styles.messageText}>{item.message}</Text>
-                  </View>
-                  {item.senderName === userData.userId && (
-                    <View>
-                      <Text>{item.senderName}</Text>
-                    </View>
-                  )}
-                </View>
-              )}
-              keyExtractor={item => item.id}
-            />
-            <View
-              style={{
-                ...styles.inputContainer,
-                top: keyboardOpen
-                  ? windowHeight - (keyboardHeight + 120)
-                  : windowHeight - 120,
-              }}>
-              <TextInput
-                value={userData.message}
-                style={styles.input}
-                onChangeText={value => {
-                  setUserData({...userData, message: value});
-                }}
-                placeholder="Type a message..."
-              />
-              <TouchableOpacity style={styles.sendButton} onPress={sendValue}>
-                <Text style={styles.sendButtonText}>Send</Text>
-              </TouchableOpacity>
-            </View>
-            <View></View>
-          </View>
-        ) : (
-          <View>
-            <FlatList
-              data={[...privateChats.get(tab)]}
-              renderItem={({item}) => (
-                <View key={item.id}>
-                  {item.senderName !== userData.userId && (
-                    <View>
-                      <Text>{item.senderName}</Text>
-                    </View>
-                  )}
-                  <View>
-                    <Text>{item.message}</Text>
-                  </View>
-                  {item.senderName === userData.userId && (
-                    <View>
-                      <Text>{item.senderName}</Text>
-                    </View>
-                  )}
-                </View>
-              )}
-              keyExtractor={item => item}
-            />
+    <View>
+      <FlatList
+        style={{height: '90%'}}
+        data={publicChats}
+        renderItem={({item: item}) => (
+          <View key={item.id}>
+            <Text>{item.id}</Text>
             <View>
-              <TextInput
-                placeholder="enter the message"
-                value={userData.message}
-                onChangeText={value => {
-                  setUserData({...userData, message: value});
-                }}
-              />
-              <Pressable onPress={sendPrivateValue}>
-                <Text>send</Text>
-              </Pressable>
+              <Text>{item.message}</Text>
             </View>
+            {item.senderName === userData.userId && (
+              <View>
+                <Text>{item.senderName}</Text>
+              </View>
+            )}
           </View>
         )}
-      </View>
-    </SafeAreaView>
+        keyExtractor={item => item.id}
+      />
+
+      <KeyboardAvoidingView
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+        style={styles.container}>
+        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+          <View style={styles.inner}>
+            <TextInput
+              placeholderTextColor="#999"
+              selectionColor="#333"
+              value={userData.message}
+              placeholder="Type a message"
+              style={styles.textInput}
+              onChangeText={value => {
+                setUserData({...userData, message: value});
+              }}
+            />
+            <TouchableOpacity
+              disabled={disabled}
+              style={{
+                ...styles.sendButton,
+              }}
+              onPress={sendValue}>
+              <Text style={styles.sendButtonText}>
+                <Icon
+                  style={{fontSize: 24, color: disabled ? '#ccc' : 'white'}}
+                  name="send-outline"></Icon>
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </TouchableWithoutFeedback>
+      </KeyboardAvoidingView>
+    </View>
   );
 };
+
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
-    backgroundColor: '#eee',
+    justifyContent: 'center',
+    backgroundColor: '#9c27b0',
   },
-  messagesContainer: {
-    flex: 1,
-    padding: 10,
-  },
-  messageBubble: {
-    borderRadius: 10,
-    padding: 10,
-    marginBottom: 10,
-  },
-  outgoingBubble: {
-    backgroundColor: '#00b8d4',
-    alignSelf: 'flex-end',
-  },
-  incomingBubble: {
-    backgroundColor: '#fff',
-    alignSelf: 'flex-start',
-  },
-  messageText: {
-    color: '#222',
-    fontSize: 16,
-  },
-  senderText: {
-    fontWeight: 'bold',
-    marginBottom: 5,
-  },
-  inputContainer: {
-    position: 'absolute',
-    flexDirection: 'row',
+  inner: {
+    width: '100%',
+    height: '10%',
+    padding: 20,
+    justifyContent: 'center',
     alignItems: 'center',
-    padding: 10,
+    flexDirection: 'row',
   },
-  input: {
+  textInput: {
+    shadowColor: '#ccc',
+    shadowOffset: {width: 0, height: 2},
+    shadowOpacity: 0.8,
+    shadowRadius: 2,
     flex: 1,
     height: 40,
+    borderColor: '#333',
     borderWidth: 1,
-    borderColor: '#ddd',
-    borderRadius: 20,
+    borderRadius: 5,
     paddingHorizontal: 10,
-    backgroundColor: '#fff',
+    fontSize: 16,
+    fontWeight: '500',
+    textAlign: 'left',
+    fontFamily: 'sans-serif',
+    color: '#333',
+    backgroundColor: 'white',
   },
   sendButton: {
-    width: 80,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: '#00b8d4',
-    alignItems: 'center',
+    flex: 0.1,
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    alignItems: 'flex-end',
     justifyContent: 'center',
+    color: 'white',
   },
   sendButtonText: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: 'bold',
+    color: '#ffffff',
+    fontSize: 18,
   },
 });
 

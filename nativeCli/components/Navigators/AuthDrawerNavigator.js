@@ -14,6 +14,7 @@ export default function AuthDrawerNavigator() {
         component={DrawerNavigator}
         options={{
           headerShown: false,
+          statusBar: 'dark',
         }}
       />
       <Stack.Screen name={ROUTES.LOGIN} component={Login} options={{}} />

@@ -26,8 +26,7 @@ public class ChatController {
     @MessageMapping("/message")
     @SendTo("/chatroom/public")
     public Message receiveMessage(@Payload Message message){
-        messageService.saveMessage(message);
-        return message;
+        return  messageService.saveMessage(message);
     }
 
     @MessageMapping("/private-message")

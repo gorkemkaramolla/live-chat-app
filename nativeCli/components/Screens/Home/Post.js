@@ -24,10 +24,9 @@ import {
   ScrollView,
   PermissionsAndroid,
 } from 'react-native';
-export default function Post(props) {
+export default function Post() {
   useEffect(() => {}, []);
   const {modalVisible, setModalVisible} = props;
-
   if (!modalVisible || !setModalVisible) {
     return null;
   }

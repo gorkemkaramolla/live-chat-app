@@ -12,13 +12,13 @@ import {SafeAreaView} from 'react-native-safe-area-context';
 import {getPageablePost} from '../../../requests/PostRequests';
 import Post from '../Post';
 const windowHeight = Dimensions.get('window').height;
-export default function Home({navigation}) {
+export default function Home({navigation, route}) {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
-
   useEffect(() => {
+    console.debug('from home' + JSON.stringify(route.params));
     getPageablePost(0, response => {
       console.debug('Home useEffect');
       setPosts(response);
@@ -42,7 +42,7 @@ export default function Home({navigation}) {
   }, []);
 
   return (
-    <SafeAreaView>
+    <SafeAreaView style={{backgroundColor: route.params.backgroundColor}}>
       {modalVisible && (
         <Post modalVisible={modalVisible} setModalVisible={setModalVisible} />
       )}

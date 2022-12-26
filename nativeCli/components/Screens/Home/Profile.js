@@ -40,7 +40,7 @@ const PostItem = ({style, src}) => (
   </View>
 );
 
-const Profile = ({navigation}) => {
+const Profile = ({navigation, route}) => {
   const [loading, setLoading] = useState(true);
 
   const [refreshing, setRefreshing] = useState(false);
@@ -128,7 +128,11 @@ const Profile = ({navigation}) => {
     }
   };
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView
+      style={{
+        ...styles.container,
+        backgroundColor: route.params.backgroundColor,
+      }}>
       <Pressable
         style={{alignSelf: 'flex-end', marginRight: 10}}
         onPress={() => setModalVisible(true)}>

@@ -9,8 +9,9 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import ChatWebSocket from '../ChatWebSocket';
+import KEyboardt from '../KEyboardt';
 
-const Message = () => {
+const Message = ({route}) => {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
 
@@ -47,7 +48,9 @@ const Message = () => {
     //     </TouchableOpacity>
     //   </View>
     // </SafeAreaView>
-    <ChatWebSocket></ChatWebSocket>
+    <View style={{backgroundColor: route.params.backgroundColor}}>
+      <ChatWebSocket></ChatWebSocket>
+    </View>
   );
 };
 
@@ -80,12 +83,12 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   inputContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: 'column',
+    flex: 1,
+    justifyContent: 'center',
     padding: 10,
   },
   input: {
-    flex: 1,
     height: 40,
     borderWidth: 1,
     borderColor: '#ddd',

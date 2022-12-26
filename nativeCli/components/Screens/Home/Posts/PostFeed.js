@@ -18,7 +18,7 @@ import {
 import {ROUTES} from '../../../constants';
 const windowHeight = Dimensions.get('window').height;
 
-export default function PostFeed({navigation, post}) {
+export default function PostFeed({navigation, route, post}) {
   const [liked, setLiked] = useState(false);
   const [CommentMode, setCommentMode] = useState(false);
   const [modalVisible, setModalVisible] = useState(false);
