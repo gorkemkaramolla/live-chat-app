@@ -8,7 +8,7 @@ import Profile from '../Screens/Home/Profile';
 import Settings from '../Screens/Home/Settings';
 import Post from '../Screens/Home/Post';
 import {ROUTES} from '../constants';
-import Message from '../Screens/Home/Message';
+import Message from '../Screens/Home/Messages/Message';
 import Home from '../Screens/Home/Feed/Home';
 import {SafeAreaView} from 'react-native-safe-area-context';
 const BottomTabs = createMaterialTopTabNavigator();

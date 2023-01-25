@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   View,
   SafeAreaView,
@@ -7,16 +7,36 @@ import {
   StyleSheet,
   Dimensions,
   TouchableOpacity,
+  FlatList,
+  Pressable,
 } from 'react-native';
-import ChatWebSocket from '../ChatWebSocket';
-import KEyboardt from '../KEyboardt';
+import ChatWebSocket from './MessageSending/ChatWebSocket';
+import KEyboardt from '../../KEyboardt';
+import MessageBox from './MessageBox';
+import {getCurrentUser} from '../../../requests/UserRequest';
+import {ROUTES} from '../../../constants';
 
-const Message = ({route}) => {
-  const [messages, setMessages] = useState([]);
+const Message = ({navigation, route}) => {
+  const [userInformations, setUserInformations] = useState({});
+
+  const [messageList, setMessageList] = useState([
+    {
+      id: '63a8729312fd6673daeb7955',
+      message: 'Ne yapıyorsun?',
+      senderName: 'gorkemkaramolla',
+      messageDate: '22 Aralık, 17:59',
+    },
+    {
+      id: '63a70eb9868ea126f5f591a4',
+      message: 'Naber moruk ya bayadır görüşmüyoruz?',
+      senderName: 'osman',
+      messageDate: '23 Aralık, 17:59',
+    },
+  ]);
   const [input, setInput] = useState('');
 
   const sendMessage = () => {
-    setMessages([...messages, {text: input, isOutgoing: true}]);
+    setMessageList([...messages, {text: input, isOutgoing: true}]);
     setInput('');
   };
 
@@ -48,8 +68,22 @@ const Message = ({route}) => {
     //     </TouchableOpacity>
     //   </View>
     // </SafeAreaView>
+
     <View style={{backgroundColor: route.params.backgroundColor}}>
-      <ChatWebSocket></ChatWebSocket>
+      <FlatList
+        style={{height: '90%'}}
+        data={messageList}
+        renderItem={({item}) => {
+          return (
+            <MessageBox
+              item={item}
+              userInformations={userInformations}
+              navigation={navigation}
+            />
+          );
+        }}
+        keyExtractor={item => item.id}
+      />
     </View>
   );
 };

@@ -16,6 +16,7 @@ import {
   Image,
 } from 'react-native';
 import {ROUTES} from '../../../constants';
+import UserNameLayout from '../Users/UserNameLayout';
 const windowHeight = Dimensions.get('window').height;
 
 export default function PostFeed({navigation, route, post}) {
@@ -28,17 +29,7 @@ export default function PostFeed({navigation, route, post}) {
   return (
     <View style={styles.wrapper}>
       <View style={styles.container}>
-        <View style={styles.userInfo}>
-          <Image
-            style={styles.userProfileLogo}
-            source={{uri: 'data:image/png;base64,' + post.profilePic.data}}
-          />
-          <View style={styles.userText}>
-            <Text style={styles.text}>{post.username}</Text>
-
-            <Text style={styles.text}>{post.createdAt}</Text>
-          </View>
-        </View>
+        <UserNameLayout styles={styles} post={post}></UserNameLayout>
         {post.file !== null ? (
           <ImageBackground
             style={styles.image}
@@ -47,7 +38,6 @@ export default function PostFeed({navigation, route, post}) {
             }}
           />
         ) : null}
-
         <Text style={styles.comment}>{post.content}</Text>
         <Pressable
           onPress={() => {
@@ -55,7 +45,6 @@ export default function PostFeed({navigation, route, post}) {
           }}>
           <Text style={styles.numberLikes}>0 likes</Text>
         </Pressable>
-
         <View style={styles.btnContainer}>
           <Pressable
             style={styles.btn}
@@ -127,6 +116,7 @@ const styles = StyleSheet.create({
     width: 48,
     height: 48,
     marginRight: '4%',
+    marginBottom: '2%',
   },
   userInfo: {
     maxWidth: '100%',
@@ -139,7 +129,7 @@ const styles = StyleSheet.create({
     margin: '2%',
   },
   userText: {
-    marginTop: '1%',
+    marginTop: '0%',
     textAlign: 'left',
   },
   text: {

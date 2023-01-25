@@ -1,8 +1,8 @@
 import React, {useEffect, useState} from 'react';
 import {over} from 'stompjs';
-import KeyboardListener from 'react-native-keyboard-listener';
 import Icon from 'react-native-vector-icons/Ionicons';
 import SockJS from 'sockjs-client';
+import {useRef} from 'react';
 import {Dimensions, Keyboard, TouchableWithoutFeedback} from 'react-native';
 import {
   View,
@@ -13,21 +13,24 @@ import {
   Pressable,
   TouchableOpacity,
   StyleSheet,
+  Image,
 } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {KeyboardAvoidingView} from 'react-native';
+import UserNameLayout from '../../Users/UserNameLayout';
+import SingleMessage from './SingleMessage';
 
 const windowWidth = Dimensions.get('window').width;
 const windowHeight = Dimensions.get('window').height;
 var stompClient = null;
 
-const ChatWebSocket = () => {
-  const [privateChats, setPrivateChats] = useState(new Map());
+const ChatWebSocket = ({route}) => {
+  let flatListRef = useRef(null);
+
+  const [privateChats, setPrivateChats] = useState([]);
   const [publicChats, setPublicChats] = useState([]);
-  const [tab, setTab] = useState('CHATROOM');
-  const [keyboardOpen, setKeyboardOpen] = useState(false);
-  const [keyboardHeight, setKeyboardHeight] = useState(0);
+  const [tab, setTab] = useState('63a70eb9868ea126f5f591a4');
   const [disabled, setDisabled] = useState(false);
   const [userData, setUserData] = useState({
     userId: '',
@@ -35,21 +38,8 @@ const ChatWebSocket = () => {
     connected: false,
     message: '',
   });
-  const handleKeyboardShow = event => {
-    setKeyboardOpen(true);
-    setKeyboardHeight(event.endCoordinates.height);
-  };
-
-  const handleKeyboardHide = () => {
-    setKeyboardOpen(false);
-  };
-
-  Keyboard.addListener('keyboardDidShow', handleKeyboardShow);
-  Keyboard.addListener('keyboardDidHide', handleKeyboardHide);
 
   useEffect(() => {
-    console.debug('*********************************publicChat' + publicChats);
-    console.debug('*********************************userId' + userData.userId);
     const getUserId = async () => {
       AsyncStorage.getItem('@current_user_id')
         .then(res => {
@@ -64,12 +54,19 @@ const ChatWebSocket = () => {
 
   useEffect(() => {
     if (userData.userId) {
+      console.log(userData.userId);
       connect();
     }
   }, [userData.userId]);
 
+  useEffect(() => {
+    flatListRef.current.scrollToEnd({animated: true});
+  }, []);
   const connect = () => {
-    let Sock = new SockJS('http://localhost:8080/ws');
+    let Sock = new SockJS(
+      `http://192.168.1.101:8080/user/${userData.userId}/private`,
+    );
+
     stompClient = over(Sock);
     stompClient.connect({}, onConnected, onError);
   };
@@ -81,6 +78,7 @@ const ChatWebSocket = () => {
       '/user/' + userData.userId + '/private',
       onPrivateMessage,
     );
+    userJoin();
   };
 
   const userJoin = () => {
@@ -95,10 +93,7 @@ const ChatWebSocket = () => {
     var payloadData = JSON.parse(payload.body);
     switch (payloadData.status) {
       case 'JOIN':
-        if (!privateChats.get(payloadData.senderName)) {
-          privateChats.set(payloadData.senderName, []);
-          setPrivateChats(new Map(privateChats));
-        }
+        setPrivateChats([...privateChats, payloadData]);
         break;
       case 'MESSAGE':
         console.debug('OnMessageRecieved payload' + JSON.parse(payload.body));
@@ -110,15 +105,6 @@ const ChatWebSocket = () => {
 
   const onPrivateMessage = payload => {
     var payloadData = JSON.parse(payload.body);
-    if (privateChats.get(payloadData.senderName)) {
-      privateChats.get(payloadData.senderName).push(payloadData);
-      setPrivateChats(new Map(privateChats));
-    } else {
-      let list = [];
-      list.push(payloadData);
-      privateChats.set(payloadData.senderName, list);
-      setPrivateChats(new Map(privateChats));
-    }
   };
 
   const onError = err => {
@@ -149,15 +135,13 @@ const ChatWebSocket = () => {
     if (stompClient) {
       var chatMessage = {
         senderId: userData.userId,
-        receiverId: tab,
+        receiverId: '63a8729312fd6673daeb7955',
         message: userData.message,
         status: 'MESSAGE',
       };
 
-      if (userData.userId !== tab) {
-        privateChats.get(tab).push(chatMessage);
-        setPrivateChats(new Map(privateChats));
-      }
+      setPrivateChats([...privateChats, chatMessage]);
+
       stompClient.send('/app/private-message', {}, JSON.stringify(chatMessage));
       setUserData({...userData, message: ''});
     }
@@ -168,70 +152,93 @@ const ChatWebSocket = () => {
   };
 
   return (
-    <View>
+    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        style={styles.container}>
-        <FlatList
-          style={{height: '90%'}}
-          data={publicChats}
-          renderItem={({item: item}) => (
-            <View key={item.id}>
-              <Text style={styles.text}>{item.id}</Text>
-              <View>
-                <Text style={styles.text}>{item.message}</Text>
-              </View>
-              {item.senderName === userData.userId && (
-                <View>
-                  <Text style={styles.text}>{item.senderName}</Text>
-                </View>
-              )}
-            </View>
-          )}
-          keyExtractor={item => item.id}
-        />
-
-        <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-          <View style={styles.inner}>
-            <TextInput
-              placeholderTextColor="#999"
-              selectionColor="#333"
-              value={userData.message}
-              placeholder="Type a message"
-              style={styles.textInput}
-              onChangeText={value => {
-                setUserData({...userData, message: value});
-              }}
-            />
-            <TouchableOpacity
-              disabled={disabled}
-              style={{
-                ...styles.sendButton,
-              }}
-              onPress={sendValue}>
-              <Text style={styles.sendButtonText}>
-                <Icon
-                  style={{fontSize: 24, color: disabled ? '#ccc' : 'white'}}
-                  name="send-outline"></Icon>
-              </Text>
-            </TouchableOpacity>
-          </View>
-        </TouchableWithoutFeedback>
+        style={styles.container}
+        behavior={'padding'}
+        keyboardVerticalOffset={-windowHeight}>
+        {
+          <FlatList
+            onContentSizeChange={() =>
+              flatListRef.current.scrollToEnd({animated: true})
+            }
+            showsVerticalScrollIndicator={false}
+            ref={flatListRef}
+            contentContainerStyle={{}}
+            style={{
+              width: '100%',
+            }}
+            data={privateChats}
+            renderItem={({item}) => (
+              <SingleMessage
+                userId={userData.userId}
+                picture={route.params.picture.data}
+                styles={styles}
+                messageInfo={item}></SingleMessage>
+              // <View key={item.id}>
+              //   <Text style={styles.text}>{item.id}</Text>
+              //   <View>
+              //     <Text style={styles.text}>{item.message}</Text>
+              //   </View>
+              //   {item.senderName === userData.userId && (
+              //     <View>
+              //       <Text style={styles.text}>{item.senderName}</Text>
+              //     </View>
+              //   )}
+              // </View>
+            )}
+            keyExtractor={item => item.length}
+          />
+        }
+        <View style={styles.inner}>
+          <TextInput
+            placeholderTextColor="#999"
+            selectionColor="#333"
+            value={userData.message}
+            placeholder="Message"
+            style={styles.textInput}
+            onChangeText={value => {
+              setUserData({...userData, message: value});
+            }}
+          />
+          <TouchableOpacity
+            disabled={disabled}
+            style={{
+              ...styles.sendButton,
+            }}
+            onPress={sendPrivateValue}>
+            <Text style={styles.sendButtonText}>
+              <Icon
+                style={{
+                  fontSize: 24,
+                  color: disabled ? '#ccc' : 'white',
+                  alignSelf: 'center',
+                }}
+                name="send-outline"></Icon>
+            </Text>
+          </TouchableOpacity>
+        </View>
       </KeyboardAvoidingView>
-    </View>
+    </TouchableWithoutFeedback>
   );
 };
 
 const styles = StyleSheet.create({
-  container: {},
+  container: {
+    flex: 1,
+    flexDirection: 'column',
+    justifyContent: 'flex-end',
+    alignItems: 'flex-end',
+  },
   text: {
     color: 'red',
+    width: '100%',
   },
 
   inner: {
     width: '100%',
+    bottom: 0,
     alignSelf: 'center',
-    paddingTop: 0,
     flexDirection: 'row',
   },
   textInput: {
@@ -239,28 +246,47 @@ const styles = StyleSheet.create({
     shadowOffset: {width: 0, height: 2},
     shadowOpacity: 0.8,
     shadowRadius: 2,
-    flex: 1,
     borderColor: '#333',
     borderWidth: 1,
-    borderRadius: 5,
-    paddingHorizontal: 10,
+    borderRadius: 25,
     fontSize: 16,
     fontWeight: '500',
     color: '#333',
+    width: '90%',
     backgroundColor: 'white',
+    marginBottom: '2%',
   },
   sendButton: {
-    flex: 0.1,
-    width: 50,
-    height: 50,
-    borderRadius: 25,
-    alignItems: 'flex-end',
+    backgroundColor: '#0078fe',
+    color: 'white',
+    alignSelf: 'center',
     justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: '2%',
+    borderRadius: 25,
+    padding: 10,
+    width: '10%',
+
     color: 'white',
   },
   sendButtonText: {
-    color: '#ffffff',
     fontSize: 18,
+  },
+  userProfileLogo: {
+    width: 48,
+    height: 48,
+    marginTop: '2%',
+    marginLeft: '1%',
+    marginRight: '4%',
+  },
+  userInfoCurrent: {
+    maxWidth: '100%',
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    alignItems: 'flex-end',
+    minHeight: '5%',
+
+    margin: '2%',
   },
 });
 

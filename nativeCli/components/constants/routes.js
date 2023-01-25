@@ -12,4 +12,5 @@ export default {
   USERINFO: 'UserInfo',
   SEARCH: 'Search',
   MAKECOMMENT: 'MakeComment',
+  SENDMESSAGE: 'SendMessage',
 };

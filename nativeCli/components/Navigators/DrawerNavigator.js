@@ -1,8 +1,10 @@
 import React, {useEffect} from 'react';
-import {createDrawerNavigator} from '@react-navigation/drawer';
+import {createNativeStackNavigator} from '@react-navigation/native-stack';
+
 import BottomNavigator from './BottomNavigator';
 import {ROUTES} from '../constants';
-const Drawer = createDrawerNavigator();
+import ChatWebSocket from '../Screens/Home/Messages/MessageSending/ChatWebSocket';
+const Drawer = createNativeStackNavigator();
 const DrawerNavigator = ({route}) => {
   return (
     <Drawer.Navigator
@@ -17,6 +19,13 @@ const DrawerNavigator = ({route}) => {
         initialParams={route.params}
         name={ROUTES.BOTTOM}
         component={BottomNavigator}></Drawer.Screen>
+      <Drawer.Screen
+        options={{
+          headerShown: false,
+        }}
+        initialParams={route.params}
+        name={ROUTES.SENDMESSAGE}
+        component={ChatWebSocket}></Drawer.Screen>
     </Drawer.Navigator>
   );
 };
