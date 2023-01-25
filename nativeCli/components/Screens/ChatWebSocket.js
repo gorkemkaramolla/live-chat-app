@@ -69,7 +69,7 @@ const ChatWebSocket = () => {
   }, [userData.userId]);
 
   const connect = () => {
-    let Sock = new SockJS('http://192.168.1.103:8080/ws');
+    let Sock = new SockJS('http://localhost:8080/ws');
     stompClient = over(Sock);
     stompClient.connect({}, onConnected, onError);
   };
@@ -169,28 +169,28 @@ const ChatWebSocket = () => {
 
   return (
     <View>
-      <FlatList
-        style={{height: '90%'}}
-        data={publicChats}
-        renderItem={({item: item}) => (
-          <View key={item.id}>
-            <Text>{item.id}</Text>
-            <View>
-              <Text>{item.message}</Text>
-            </View>
-            {item.senderName === userData.userId && (
-              <View>
-                <Text>{item.senderName}</Text>
-              </View>
-            )}
-          </View>
-        )}
-        keyExtractor={item => item.id}
-      />
-
       <KeyboardAvoidingView
         behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         style={styles.container}>
+        <FlatList
+          style={{height: '90%'}}
+          data={publicChats}
+          renderItem={({item: item}) => (
+            <View key={item.id}>
+              <Text style={styles.text}>{item.id}</Text>
+              <View>
+                <Text style={styles.text}>{item.message}</Text>
+              </View>
+              {item.senderName === userData.userId && (
+                <View>
+                  <Text style={styles.text}>{item.senderName}</Text>
+                </View>
+              )}
+            </View>
+          )}
+          keyExtractor={item => item.id}
+        />
+
         <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
           <View style={styles.inner}>
             <TextInput
@@ -223,16 +223,15 @@ const ChatWebSocket = () => {
 };
 
 const styles = StyleSheet.create({
-  container: {
-    justifyContent: 'center',
-    backgroundColor: '#9c27b0',
+  container: {},
+  text: {
+    color: 'red',
   },
+
   inner: {
     width: '100%',
-    height: '10%',
-    padding: 20,
-    justifyContent: 'center',
-    alignItems: 'center',
+    alignSelf: 'center',
+    paddingTop: 0,
     flexDirection: 'row',
   },
   textInput: {
@@ -241,15 +240,12 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.8,
     shadowRadius: 2,
     flex: 1,
-    height: 40,
     borderColor: '#333',
     borderWidth: 1,
     borderRadius: 5,
     paddingHorizontal: 10,
     fontSize: 16,
     fontWeight: '500',
-    textAlign: 'left',
-    fontFamily: 'sans-serif',
     color: '#333',
     backgroundColor: 'white',
   },

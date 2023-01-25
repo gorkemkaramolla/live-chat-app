@@ -89,7 +89,6 @@ const styles = StyleSheet.create({
     minWidth: '100%',
     lineHeight: 30,
 
-    fontFamily: 'Roboto-Light',
     color: '#241616',
   },
   numberLikes: {
@@ -117,7 +116,6 @@ const styles = StyleSheet.create({
   },
   text: {
     fontSize: 16,
-    fontFamily: 'Roboto-Light',
     color: '#241616',
   },
 
