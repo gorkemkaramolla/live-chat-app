@@ -43,8 +43,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         http.authorizeRequests()
                 .antMatchers("/ws/**").permitAll();
         http.authorizeRequests()
-                .antMatchers("/chatroom/**", "/user/**").authenticated()
-                .anyRequest().permitAll();
+                .antMatchers("/chatroom/**", "/user/**").permitAll();
         http.authorizeRequests().antMatchers(GET,"/users/image/*").permitAll();
         http.authorizeRequests().anyRequest().authenticated();
         http.addFilter(customAuthFilter);
