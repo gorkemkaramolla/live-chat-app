@@ -30,7 +30,7 @@ const ChatWebSocket = ({route}) => {
 
   const [privateChats, setPrivateChats] = useState([]);
   const [publicChats, setPublicChats] = useState([]);
-  const [tab, setTab] = useState('6394cbac5e66002d850342b4');
+  const [tab, setTab] = useState('63d1ab4b8d73a344bce36129');
   const [disabled, setDisabled] = useState(false);
   const [userData, setUserData] = useState({
     userId: '',
@@ -77,6 +77,7 @@ const ChatWebSocket = ({route}) => {
     stompClient.subscribe(
       '/user/' + userData.userId + '/private',
       onPrivateMessage,
+      onMessageReceived,
     );
     userJoin();
   };
@@ -90,6 +91,7 @@ const ChatWebSocket = ({route}) => {
   };
 
   const onMessageReceived = payload => {
+    console.log('meessage received');
     var payloadData = JSON.parse(payload.body);
     switch (payloadData.status) {
       case 'JOIN':
@@ -97,8 +99,8 @@ const ChatWebSocket = ({route}) => {
         break;
       case 'MESSAGE':
         console.debug('OnMessageRecieved payload' + JSON.parse(payload.body));
-        publicChats.push(payloadData);
-        setPublicChats([...publicChats]);
+        setPrivateChats([...privateChats, payloadData]);
+
         break;
     }
   };
@@ -135,7 +137,7 @@ const ChatWebSocket = ({route}) => {
     if (stompClient) {
       var chatMessage = {
         senderId: userData.userId,
-        receiverId: '63a8729312fd6673daeb7955',
+        receiverId: '63d1ab4b8d73a344bce36129',
         message: userData.message,
         status: 'MESSAGE',
       };

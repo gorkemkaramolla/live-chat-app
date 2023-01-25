@@ -27,7 +27,7 @@ const Message = ({navigation, route}) => {
       messageDate: '22 Aralık, 17:59',
     },
     {
-      id: '6394cbac5e66002d850342b4',
+      id: '63d1ab4b8d73a344bce36129',
       message: 'Naber moruk ya bayadır görüşmüyoruz?',
       senderName: 'osman',
       messageDate: '23 Aralık, 17:59',
