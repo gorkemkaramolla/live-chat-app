@@ -21,13 +21,13 @@ const Message = ({navigation, route}) => {
 
   const [messageList, setMessageList] = useState([
     {
-      id: '63a8729312fd6673daeb7955',
+      id: '638dd8aaad0ee737752bff94',
       message: 'Ne yapıyorsun?',
       senderName: 'gorkemkaramolla',
       messageDate: '22 Aralık, 17:59',
     },
     {
-      id: '63a70eb9868ea126f5f591a4',
+      id: '6394cbac5e66002d850342b4',
       message: 'Naber moruk ya bayadır görüşmüyoruz?',
       senderName: 'osman',
       messageDate: '23 Aralık, 17:59',

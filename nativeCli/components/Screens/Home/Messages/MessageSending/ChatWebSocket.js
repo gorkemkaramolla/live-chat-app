@@ -30,7 +30,7 @@ const ChatWebSocket = ({route}) => {
 
   const [privateChats, setPrivateChats] = useState([]);
   const [publicChats, setPublicChats] = useState([]);
-  const [tab, setTab] = useState('63a70eb9868ea126f5f591a4');
+  const [tab, setTab] = useState('6394cbac5e66002d850342b4');
   const [disabled, setDisabled] = useState(false);
   const [userData, setUserData] = useState({
     userId: '',
