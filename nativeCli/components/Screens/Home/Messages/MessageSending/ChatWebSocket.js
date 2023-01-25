@@ -137,7 +137,7 @@ const ChatWebSocket = ({route}) => {
     if (stompClient) {
       var chatMessage = {
         senderId: userData.userId,
-        receiverId: '63d1ab4b8d73a344bce36129',
+        receiverId: userData.userId,
         message: userData.message,
         status: 'MESSAGE',
       };
